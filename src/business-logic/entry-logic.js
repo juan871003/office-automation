@@ -40,13 +40,6 @@ function getCountry(text) {
   }
 }
 
-/* function camelize(str) {
-  return str.replace(/\W+(.)/g, function(match, chr)
-  {
-    return chr.toUpperCase()
-  })
-} */
-
 function guessSupplier(awb, country) {
   if (awb.substring(0, 2).indexOf('081')
       && country === enums.SupplierCountries.South_Africa) {
@@ -162,7 +155,6 @@ async function getInsectsContent(newPage, pendingInsectsElHandle) {
   const commentsXpath = '//td/b[text()="Standard Comments:"]/../following-sibling::td[1]';
   const newNewPagePromise = new Promise(x => newPage.browser().once('targetcreated', target => x(target.page())));
   const pendingInsectsLinkEl = await pendingInsectsElHandle[0];
-  // await pendingInsectsElHandleclick();
   await pendingInsectsLinkEl.click();
   const newnewPage = await newNewPagePromise;
   await newnewPage.waitForXPath(commentsXpath);
