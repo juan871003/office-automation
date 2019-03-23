@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "author": "Juan Castano <juan871003@gmail.com>",
   "description": "attempting to do a vue electron app to automate tasks",
-  "license": null,
+  "license": "MIT",
   "main": "./dist/electron/main.js",
   "scripts": {
     "build": "node .electron-vue/build.js && electron-builder",

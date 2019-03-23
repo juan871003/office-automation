@@ -5,6 +5,8 @@
 const state = {
   shipmentEntries: [],
   entriesFolder: null,
+  expensesExcelFile: null,
+  insectResultsExcelFile: null,
 };
 // #region  old
 /* const actions = {
@@ -101,8 +103,14 @@ const actions = {
       context.commit('MODIFY_ENTRY', {entryNumber: entry.entryNumber, property: property, newValue: newValue});
     }
   },
-  SET_ENTRIES_FOLDER(context, path) {
-    context.commit('SET_ENTRIES_FOLDER', path);
+  SET_ENTRIES_FOLDER(context, thePath) {
+    context.commit('SET_ENTRIES_FOLDER', thePath);
+  },
+  SET_EXPENSES_FILEPATH(context, thePath) {
+    context.commit('SET_EXPENSES_FILEPATH', thePath);
+  },
+  SET_INSECTRESULTS_FILEPATH(context, thePath) {
+    context.commit('SET_INSECTRESULTS_FILEPATH', thePath);
   },
   DELETE_ALL_ENTRIES(context) {
     context.commit('DELETE_ALL_ENTRIES');
@@ -119,8 +127,14 @@ const mutations = {
   REMOVE_ENTRY(state, entryNumber) {
     state.shipmentEntries = state.shipmentEntries.filter(s => s.entryNumber !== entryNumber);
   },
-  SET_ENTRIES_FOLDER(state, path) {
-    state.entriesFolder = path;
+  SET_ENTRIES_FOLDER(state, thePath) {
+    state.entriesFolder = thePath;
+  },
+  SET_EXPENSES_FILEPATH(state, thePath) {
+    state.expensesExcelFile = thePath;
+  },
+  SET_INSECTRESULTS_FILEPATH(state, thePath) {
+    state.insectResultsExcelFile = thePath;
   },
   DELETE_ALL_ENTRIES(state) {
     state.shipmentEntries = [];
