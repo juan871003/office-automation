@@ -7,23 +7,23 @@
           Please go to Settings and choose a valid Shipment Entries folder
       </p>
       <button 
-        v-else @click="addEntries()"
+        v-else @click="!loading && addEntries()"
         class="btn btn-primary"
-        :class="{disabled : loading}">
+        :class="{disabled: loading}">
           Add Entries
       </button>
       <button 
         v-if="entries && entries.length > 0"
-        @click="resetEntries()"
+        @click="!loading && resetEntries()"
         class="btn btn-primary"
-        :class="{disabled : loading}">
+        :class="{disabled: loading}">
           Reset Saved Entries
       </button>
       <button 
         v-if="entries && entries.length > 0"
-        @click="loadEntriesDetails(entries)"
+        @click="!loading && loadEntriesDetails(entries)"
         class="btn btn-primary"
-        :class="{disabled : loading}">
+        :class="{disabled: loading}">
           Load Entries Details
       </button>
     </div>
@@ -168,27 +168,7 @@
           if (err) {
             console.log('error reading dir');
           } else {
-            filenames.forEach((filename) => {
-              if (filename.indexOf('.htm') > -1) {
-                fs.readFile(`${this.entriesFolder}/${filename}`,
-                    'utf-8',
-                    (err, content) => {
-                      if (err) {
-                        console.log(`error reading file ${filename}`);
-                      } else {
-                        const se = entryLogic.initialiseEntryFromDocument(content);
-                        if (this.entries.find(
-                            entry =>
-                              entry.entryNumber === se.entryNumber) !== undefined) {
-                          this.$store.dispatch('REPLACE_ENTRY', se);
-                        } else {
-                          this.$store.dispatch('ADD_ENTRY', se);
-                        }
-                      }
-                    }
-                );
-              }
-            });
+            filenames.forEach(filename => processFilename(filename, this.entriesFolder, this.entries, this.$store));
           }
         });
       },
@@ -222,7 +202,11 @@
       },
       loadEntriesDetails(entries) {
         this.loading = true;
-        entryLogic.loadEntriesDetails(entries, this.$store).then(() => this.loading = false);
+        this.$emit('set-loading', true);
+        entryLogic.loadEntriesDetails(entries, this.$store).then(() => {
+          this.loading = false;
+          this.$emit('set-loading', false);
+        });
       },
     },
     created() {
@@ -232,6 +216,27 @@
       Datepicker,
     },
   };
+
+  function processFilename(filename, entriesFolder, entries, store) {
+    if (filename.indexOf('.htm') > -1) {
+      fs.readFile(`${entriesFolder}/${filename}`, 'utf-8', getcontent);
+    }
+
+    function getcontent(err, content) {
+      if (err) {
+        console.log(`error reading file ${filename}`);
+      } else {
+        const se = entryLogic.initialiseEntryFromDocument(content);
+        if (entries.find(
+            entry =>
+              entry.entryNumber === se.entryNumber) !== undefined) {
+          store.dispatch('REPLACE_ENTRY', se);
+        } else {
+          store.dispatch('ADD_ENTRY', se);
+        }
+      }
+    }
+  }
 </script>
 
 <style scoped>

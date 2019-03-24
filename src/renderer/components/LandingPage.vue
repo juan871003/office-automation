@@ -3,19 +3,19 @@
     <div class="row">
       <div class="col-sm-3 menu">
         <ul class="list-group">
-          <li class="list-group-item  list-group-item-primary" :class="activeTab === 'home' ? 'active' : ''"         @click="showContent('home')"        >Home       </li>
-          <li class="list-group-item  list-group-item-primary" :class="activeTab === 'entries' ? 'active' : ''"      @click="showContent('entries')"     >Entries    </li>
-          <li class="list-group-item  list-group-item-primary" :class="activeTab === 'excel_files' ? 'active' : ''"  @click="showContent('excel_files')" >Excel Files</li>
-          <li class="list-group-item  list-group-item-primary" :class="activeTab === 'emailing' ? 'active' : ''"     @click="showContent('emailing')"    >Emailing   </li>
-          <li class="list-group-item  list-group-item-primary" :class="activeTab === 'settings' ? 'active' : ''"     @click="showContent('settings')"    >Settings   </li>
+          <li class="list-group-item  list-group-item-primary" :class="{active: isActiveTab('home'), 'disabled': loading}"         @click="showContent('home')"        >Home       </li>
+          <li class="list-group-item  list-group-item-primary" :class="{active: isActiveTab('entries'), 'disabled': loading}"      @click="showContent('entries')"     >Entries    </li>
+          <li class="list-group-item  list-group-item-primary" :class="{active: isActiveTab('excel_files'), 'disabled': loading}"  @click="showContent('excel_files')" >Excel Files</li>
+          <li class="list-group-item  list-group-item-primary" :class="{active: isActiveTab('emailing'), 'disabled': loading}"     @click="showContent('emailing')"    >Emailing   </li>
+          <li class="list-group-item  list-group-item-primary" :class="{active: isActiveTab('settings'), 'disabled': loading}"     @click="showContent('settings')"    >Settings   </li>
         </ul>
       </div>
       <div class="col-sm-9 main-content">
-        <entries    v-if="     activeTab === 'entries'">    </entries>
-        <excelfiles v-else-if="activeTab === 'excel_files'"></excelfiles>
-        <emailing   v-else-if="activeTab === 'emailing'">   </emailing>
-        <settings   v-else-if="activeTab === 'settings'">   </settings>
-        <home       v-else>                                 </home>
+        <entries    v-if="     activeTab === 'entries'"     v-on:set-loading="setLoading"></entries>
+        <excelfiles v-else-if="activeTab === 'excel_files'" v-on:set-loading="setLoading"></excelfiles>
+        <emailing   v-else-if="activeTab === 'emailing'"    v-on:set-loading="setLoading"></emailing>
+        <settings   v-else-if="activeTab === 'settings'"    v-on:set-loading="setLoading"></settings>
+        <home       v-else                                  v-on:set-loading="setLoading"></home>
       </div>
     </div>
   </div>
@@ -35,11 +35,18 @@ export default {
   data: function() {
     return {
       activeTab: 'home',
+      loading: false,
     };
   },
   methods: {
     showContent(tab) {
       this.activeTab = tab;
+    },
+    isActiveTab(tab) {
+      return this.activeTab === tab;
+    },
+    setLoading(isLoading) {
+      this.loading = isLoading;
     },
   },
   computed: {},
