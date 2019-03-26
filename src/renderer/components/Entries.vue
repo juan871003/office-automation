@@ -108,7 +108,7 @@
                       type="text"
                       readonly
                       class="form-control"
-                      :value="getInsectsResult(entry)">
+                      :value="getInsectMsg(entry)">
                   </div>
                   <div class="entry-property col-sm-4">Comments:</div>
                   <div class="entry-property col-sm-8">
@@ -150,11 +150,7 @@
         return this.$store.state.AppStore.entriesFolder;
       },
       entries: function() {
-        return [...this.$store.state.AppStore.shipmentEntries]
-            .sort((e1, e2) =>
-              e1.entryNumber > e2.entryNumber ?
-                1 : e1.entryNumber < e2.entryNumber ?
-                  -1 : 0);
+        return this.$store.getters.sortedEntriesCopy;
       },
     },
     methods: {
@@ -174,17 +170,6 @@
       },
       resetEntries() {
         this.$store.dispatch('DELETE_ALL_ENTRIES');
-      },
-      getInsectsResult(entry) {
-        if (entry.isActionable === true) {
-          return 'Actionable Insects';
-        } else if (entry.isActionable === false && entry.isInsects === true) {
-          return 'Non-actionable Insects';
-        } else if (entry.isInsects === false) {
-          return 'Clean';
-        } else {
-          return 'Unknown';
-        }
       },
       changeEntryCountry(entry, country) {
         this.$store.dispatch('MODIFY_ENTRY', {entry: entry, property: 'country', newValue: country});
@@ -207,6 +192,9 @@
           this.loading = false;
           this.$emit('set-loading', false);
         });
+      },
+      getInsectMsg(entry) {
+        return this.$store.getters.getInsectsMsg(entry);
       },
     },
     created() {
@@ -244,9 +232,8 @@
     margin: 10px;
     padding: 0px;
   }
-  #actions > button {
-    margin-left: 10px; 
-    margin-right: 10px;
+  #actions button {
+    margin: 10px; 
   }
   .entry-property {
     margin-top: 5px;

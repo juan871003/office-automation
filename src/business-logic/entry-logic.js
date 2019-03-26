@@ -5,6 +5,7 @@ import {brokerCredentials} from './credentials';
 
 const cheerio = require('cheerio');
 const puppeteer = require('puppeteer');
+const Excel = require('exceljs');
 
 export function initialiseEntryFromDocument(content) {
   const c$ = cheerio.load(content);
@@ -26,6 +27,33 @@ export function initialiseEntryFromDocument(content) {
   se.supplier = guessSupplier(se.awb, se.country);
   se.deliveryDate = getDeliveryDate(se.arrivalDate, se.supplier);
   return se;
+}
+
+export async function loadEntriesDetails(/** @type {ShipmentEntry[]} */ entries, store) {
+  const browser = await puppeteer.launch({headless: true});
+  const page = await browser.newPage();
+  await gotoMainPage(page);
+  for (let i = 0; i < entries.length; i++) {
+    const newPage = await getEntryPage(page, entries[i]);
+    const status = await getEntryStatus(newPage);
+    store.dispatch('MODIFY_ENTRY', {entry: entries[i], property: 'status', newValue: status});
+    if (status === enums.EntryStatus.Finalised) {
+      const entryResults = await getEntryResults(newPage);
+      store.dispatch('MODIFY_ENTRY', {entry: entries[i], property: 'isInsects', newValue: entryResults.isInsects});
+      store.dispatch('MODIFY_ENTRY', {entry: entries[i], property: 'comments', newValue: entryResults.comments});
+      store.dispatch('MODIFY_ENTRY', {entry: entries[i], property: 'isActionable', newValue: entryResults.isActionable});
+    }
+    await newPage.close();
+  }
+  await page.waitFor(1000);
+  await browser.close();
+}
+
+export async function fillExpensesFile(entries, expensesFilePath) {
+  const emptyWorkbook = new Excel.Workbook();
+  const workbook = await emptyWorkbook.xlsx.readFile(expensesFilePath);
+  const worksheet = workbook.getWorksheet('Data');
+  return worksheet.rowCount;
 }
 
 function getCountry(text) {
@@ -75,26 +103,6 @@ function getDeliveryDate(arrivalDate, supplier) {
   const result = new Date(arrivalDate);
   result.setDate(result.getDate() + daysToAdd);
   return result;
-}
-
-export async function loadEntriesDetails(/** @type {ShipmentEntry[]} */ entries, store) {
-  const browser = await puppeteer.launch({headless: true});
-  const page = await browser.newPage();
-  await gotoMainPage(page);
-  for (let i = 0; i < entries.length; i++) {
-    const newPage = await getEntryPage(page, entries[i]);
-    const status = await getEntryStatus(newPage);
-    store.dispatch('MODIFY_ENTRY', {entry: entries[i], property: 'status', newValue: status});
-    if (status === enums.EntryStatus.Finalised) {
-      const entryResults = await getEntryResults(newPage);
-      store.dispatch('MODIFY_ENTRY', {entry: entries[i], property: 'isInsects', newValue: entryResults.isInsects});
-      store.dispatch('MODIFY_ENTRY', {entry: entries[i], property: 'comments', newValue: entryResults.comments});
-      store.dispatch('MODIFY_ENTRY', {entry: entries[i], property: 'isActionable', newValue: entryResults.isActionable});
-    }
-    await newPage.close();
-  }
-  await page.waitFor(1000);
-  await browser.close();
 }
 
 async function gotoMainPage(page) {

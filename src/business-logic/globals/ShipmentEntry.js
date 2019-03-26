@@ -5,16 +5,22 @@ import {enums} from './enums';
  */
 export default class ShipmentEntry {
   constructor() {
+    /** @type {String} */
     this.fromDocument = '';
     this.status = enums.EntryStatus.Unknown;
     this.entryNumber = '';
     this.country = enums.SupplierCountries.Unknown;
     this.awb = '';
-    this.arrivalDate = null; // Date
-    this.deliveryDate = null; // Date
+    /** @type {Date} */
+    this.arrivalDate = null;
+    /** @type {Date} */
+    this.deliveryDate = null;
     this.supplier = enums.supplierCodes.Unknown;
-    this.isInsects = null; // bool
-    this.isActionable = null; // bool
+    /** @type {Boolean} */
+    this.isInsects = null;
+    /** @type {Boolean} */
+    this.isActionable = null;
     this.comments = '';
+    this.addToExcel = true;
   }
 }
