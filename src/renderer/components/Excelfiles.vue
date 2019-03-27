@@ -103,9 +103,13 @@ export default {
   methods: {
     fillExpenses() {
       const expensesFilePath = this.$store.state.AppStore.expensesExcelFile;
+      this.loading = true;
+      this.$emit('set-loading', true);
       entryLogic.fillExpensesFile(this.entries, expensesFilePath)
           .then((data) => {
-            console.log(data);
+            console.log(JSON.stringify(data));
+            this.loading = false;
+            this.$emit('set-loading', false);
           });
     },
     fillInsectResults() {},

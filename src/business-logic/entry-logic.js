@@ -1,11 +1,10 @@
-/* eslint-disable max-len */
 import ShipmentEntry from './globals/ShipmentEntry';
 import {enums} from './globals/enums';
 import {brokerCredentials} from './credentials';
+import * as entryLogicExcel from './entry-logic-excel';
 
 const cheerio = require('cheerio');
 const puppeteer = require('puppeteer');
-const Excel = require('exceljs');
 
 export function initialiseEntryFromDocument(content) {
   const c$ = cheerio.load(content);
@@ -50,10 +49,7 @@ export async function loadEntriesDetails(/** @type {ShipmentEntry[]} */ entries,
 }
 
 export async function fillExpensesFile(entries, expensesFilePath) {
-  const emptyWorkbook = new Excel.Workbook();
-  const workbook = await emptyWorkbook.xlsx.readFile(expensesFilePath);
-  const worksheet = workbook.getWorksheet('Data');
-  return worksheet.rowCount;
+  return await entryLogicExcel.fillExpensesFile(entries, expensesFilePath);
 }
 
 function getCountry(text) {

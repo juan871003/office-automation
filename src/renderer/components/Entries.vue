@@ -43,7 +43,7 @@
                   <div class="entry-property col-sm-4">Country:</div>
                   <div class="entry-property col-sm-8">
                     <select  
-                      v-on:change="changeEntryCountry(entry, $event.target.value)"
+                      v-on:change="modifyEntry(entry, 'country', $event.target.value)"
                       class="form-control">
                         <option 
                           v-for="country in supplierCountries"
@@ -65,7 +65,7 @@
                   <div class="entry-property col-sm-4">Supplier:</div>
                   <div class="entry-property col-sm-8">
                     <select 
-                      v-on:change="changeEntrySupplier(entry, $event.target.value)"
+                      v-on:change="modifyEntry(entry, 'supplier', $event.target.value)"
                       class="form-control">
                         <option
                           v-for="supplier in supplierCodes"
@@ -82,6 +82,7 @@
                       :value="new Date(entry.arrivalDate)"
                       :bootstrap-styling="true"
                       :calendar-button="true"
+                      @selected="modifyEntry(entry, 'arrivalDate', $event)"
                       >
                     </datepicker>
                   </div>
@@ -91,6 +92,7 @@
                       :value="new Date(entry.deliveryDate)"
                       :bootstrap-styling="true"
                       :calendar-button="true"
+                      @selected="modifyEntry(entry, 'deliveryDate', $event)"
                       >
                     </datepicker>
                   </div>
@@ -171,11 +173,8 @@
       resetEntries() {
         this.$store.dispatch('DELETE_ALL_ENTRIES');
       },
-      changeEntryCountry(entry, country) {
-        this.$store.dispatch('MODIFY_ENTRY', {entry: entry, property: 'country', newValue: country});
-      },
-      changeEntrySupplier(entry, supplier) {
-        this.$store.dispatch('MODIFY_ENTRY', {entry: entry, property: 'supplier', newValue: supplier});
+      modifyEntry(entry, entryProp, newValue) {
+        this.$store.dispatch('MODIFY_ENTRY', {entry: entry, property: entryProp, newValue: newValue});
       },
       getEntryHeaderClass(status) {
         switch (status) {
