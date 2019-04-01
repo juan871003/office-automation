@@ -1,6 +1,10 @@
-import ShipmentEntry from './globals/ShipmentEntry';
+// import ShipmentEntry from './globals/ShipmentEntry';
 
 const Excel = require('exceljs');
+const fs = require('fs');
+const exec = require('child_process').execFile;
+// const XLSX = require('xlsx');
+// const xl = require('excel4node');
 
 export async function fillExpensesFile(/** @type {ShipmentEntry[]} */entries, /** @type {String} */expensesFilePath) {
   const excelWriteInfo = [];
@@ -20,19 +24,34 @@ export async function fillExpensesFile(/** @type {ShipmentEntry[]} */entries, /*
       needsSplitting: !rowFound.found,
     });
   });
-  return excelWriteInfo;
-  // console.log(rowNrFound);
-  // return rowNrFound;
 
-  // const dateColumn = worksheet.getRow(1).
-  // entries.filter(e => e.addToExcel === true).forEach(entry => {});
-  // const dateColumn = worksheet.spliceRows
-  // A1643
-  /* const lastCell = worksheet.getCell('A1642');
-  const lastCellValue = worksheet.getCell('A1642').value;
-  const lastCellText = worksheet.getCell('A1642').value; */
-  // workbook.xlsx.writeFile(expensesFilePath);
-  // return {rowcount: rowCount, lastCellValue: lastCellValue, lastCellText: lastCellText};
+  if (excelWriteInfo.length > 0) {
+    _fillExpensesFile(excelWriteInfo);
+  } else {
+    return 'No entries to add to the Expenses file';
+  }
+}
+
+function _fillExpensesFile(excelWriteInfo) {
+  const jsonFile = './csharp_excel_app/ConsoleAppModifyExcel/bin/Debug/excelWriteInfo.json';
+  fs.writeFile(
+      jsonFile
+      , JSON.stringify(excelWriteInfo, null, 2)
+      , (err) => {
+        if (err) {
+          console.log('error writing json file', err);
+        } else {
+          exec('./csharp_excel_app/ConsoleAppModifyExcel/bin/Debug/ConsoleAppModifyExcel.exe'
+              , [jsonFile]
+              , (err, data, stdErr) => executeModifyExcel(err, data)
+          );
+        }
+      });
+
+  function executeModifyExcel(err, data) {
+    console.log(`error is ${err}`);
+    console.log(`data is ${data} ,finish`);
+  }
 }
 
 function getRowNrIfFound(
@@ -41,14 +60,23 @@ function getRowNrIfFound(
     , /** @type {Number} */ rowCount) {
   const entryDate = new Date(entry.deliveryDate).setHours(0, 0, 0, 0);
   for (let i = rowCount - 1; i--; i > 0) {
-    /** @type {Date} */
-    const rowDate = worksheet.getCell(`A${i}`).value.setHours(0, 0, 0, 0);
-    if (rowDate < entryDate) return {row: i + 1, found: false};
-    if (rowDate === entryDate) {
-      /** @type {String} */
-      const rowEntryNumber = worksheet.getCell(`E${i}`).value;
-      if (rowEntryNumber === entry.entryNumber) return {row: i, found: true};
+    if (isDate(worksheet.getCell(`A${i}`).value)) {
+      /** @type {Date} */
+      const rowDate = worksheet.getCell(`A${i}`).value.setHours(0, 0, 0, 0);
+      if (rowDate < entryDate) return {row: i + 1, found: false};
+      if (rowDate === entryDate) {
+        /** @type {String} */
+        const rowEntryNumber = worksheet.getCell(`E${i}`).value;
+        if (rowEntryNumber === entry.entryNumber) return {row: i, found: true};
+      }
     }
   }
   return {row: rowCount, found: false};
+}
+
+function isDate(value) {
+  return (value !== null
+    && value !== undefined
+    && value !== ''
+    && Date.parse(value) !== NaN);
 }

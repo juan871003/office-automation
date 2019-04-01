@@ -7,7 +7,7 @@
           v-if="!isValidExpensesFile"
         >Expenses file not found, please go to settings to specify path to expenses Excel file</p>
         <p
-          v-if="!isValidResulsFile"
+          v-if="!isValidResultsFile"
         >Results file not found, please go to settings to specify path to results Excel file</p>
       </div>
       <div v-else>
