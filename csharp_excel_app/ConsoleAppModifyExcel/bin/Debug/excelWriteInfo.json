@@ -1,38 +1,170 @@
 [
   {
-    "entry": {
-      "addToExcel": true,
-      "arrivalDate": "2019-03-10T13:00:00.000Z",
-      "awb": "08187392056",
-      "comments": "",
-      "country": "South Africa",
-      "deliveryDate": "2019-03-11T13:00:00.000Z",
-      "entryNumber": "AC96WHTFL",
-      "fromDocument": "",
-      "isActionable": false,
-      "isInsects": false,
-      "status": "Finalised",
-      "supplier": "Rolf"
-    },
-    "rowNr": 1633,
-    "needsSplitting": false
+    "sheetName": "Data",
+    "rowNr": 1642,
+    "needsSplitting": false,
+    "rowDetails": [
+      {
+        "column": "A",
+        "value": "3/21/2019",
+        "type": "date"
+      },
+      {
+        "column": "B",
+        "value": "Thursday",
+        "type": "string"
+      },
+      {
+        "column": "C",
+        "value": "23922219234",
+        "type": "string"
+      },
+      {
+        "column": "D",
+        "value": "WT",
+        "type": "string"
+      },
+      {
+        "column": "E",
+        "value": "AC99WHXXL",
+        "type": "string"
+      },
+      {
+        "column": "I",
+        "value": "Clean",
+        "type": "string"
+      },
+      {
+        "column": "J",
+        "value": "",
+        "type": "string"
+      }
+    ]
   },
   {
-    "entry": {
-      "addToExcel": true,
-      "arrivalDate": "2019-02-23T13:00:00.000Z",
-      "awb": "08187392023",
-      "comments": "175 ctn flowers\nLive insects\nBISS # 364437 Species OF biosecurity concern:\nFrankliniella occidentalis (adult)\n",
-      "country": "South Africa",
-      "deliveryDate": "2019-02-24T13:00:00.000Z",
-      "entryNumber": "AC9YXEHYJ",
-      "fromDocument": "",
-      "isActionable": true,
-      "isInsects": true,
-      "status": "Finalised",
-      "supplier": "Rolf"
-    },
-    "rowNr": 1623,
-    "needsSplitting": false
+    "sheetName": "Data",
+    "rowNr": 1647,
+    "needsSplitting": false,
+    "rowDetails": [
+      {
+        "column": "A",
+        "value": "3/28/2019",
+        "type": "date"
+      },
+      {
+        "column": "B",
+        "value": "Thursday",
+        "type": "string"
+      },
+      {
+        "column": "C",
+        "value": "23922219245",
+        "type": "string"
+      },
+      {
+        "column": "D",
+        "value": "WT",
+        "type": "string"
+      },
+      {
+        "column": "E",
+        "value": "AEACEGH9G",
+        "type": "string"
+      },
+      {
+        "column": "I",
+        "value": "Clean",
+        "type": "string"
+      },
+      {
+        "column": "J",
+        "value": "",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "sheetName": "Data",
+    "rowNr": 1645,
+    "needsSplitting": false,
+    "rowDetails": [
+      {
+        "column": "A",
+        "value": "3/28/2019",
+        "type": "date"
+      },
+      {
+        "column": "B",
+        "value": "Thursday",
+        "type": "string"
+      },
+      {
+        "column": "C",
+        "value": "61866138645",
+        "type": "string"
+      },
+      {
+        "column": "D",
+        "value": "HW",
+        "type": "string"
+      },
+      {
+        "column": "E",
+        "value": "AEACEPXPP",
+        "type": "string"
+      },
+      {
+        "column": "I",
+        "value": "Clean",
+        "type": "string"
+      },
+      {
+        "column": "J",
+        "value": "",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "sheetName": "Data",
+    "rowNr": 1648,
+    "needsSplitting": true,
+    "rowDetails": [
+      {
+        "column": "A",
+        "value": "4/2/2019",
+        "type": "date"
+      },
+      {
+        "column": "B",
+        "value": "Tuesday",
+        "type": "string"
+      },
+      {
+        "column": "C",
+        "value": "08185058584",
+        "type": "string"
+      },
+      {
+        "column": "D",
+        "value": "RF",
+        "type": "string"
+      },
+      {
+        "column": "E",
+        "value": "AEAEHNFHK",
+        "type": "string"
+      },
+      {
+        "column": "I",
+        "value": "Clean",
+        "type": "string"
+      },
+      {
+        "column": "J",
+        "value": "",
+        "type": "string"
+      }
+    ]
   }
 ]

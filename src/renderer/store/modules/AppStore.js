@@ -160,17 +160,6 @@ const mutations = {
 };
 
 const getters = {
-  getInsectsMsg: (state) => (entry) => {
-    if (entry.isActionable === true) {
-      return 'Actionable Insects';
-    } else if (entry.isActionable === false && entry.isInsects === true) {
-      return 'Non-actionable Insects';
-    } else if (entry.isInsects === false) {
-      return 'Clean';
-    } else {
-      return 'Unknown';
-    }
-  },
   sortedEntriesCopy: state => [...state.shipmentEntries]
       .sort((e1, e2) =>
         e1.entryNumber > e2.entryNumber ? 1 :

@@ -52,7 +52,7 @@ export async function fillExpensesFile(entries, expensesFilePath) {
   return await entryLogicExcel.fillExpensesFile(entries, expensesFilePath);
 }
 
-function getCountry(text) {
+function getCountry(/** @type {String} */text) {
   switch (text.trim().toLowerCase()) {
     case 'malaysia': return enums.SupplierCountries.Malaysia;
     case 'singapore': return enums.SupplierCountries.Singapore;

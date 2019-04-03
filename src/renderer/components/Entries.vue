@@ -137,6 +137,7 @@
   import * as entryLogic from '../../business-logic/entry-logic.js';
   import {enums} from '../../business-logic/globals/enums';
   import Datepicker from 'vuejs-datepicker';
+import ShipmentEntry from '../../business-logic/globals/ShipmentEntry';
   const fs = require('fs');
 
   export default {
@@ -193,7 +194,7 @@
         });
       },
       getInsectMsg(entry) {
-        return this.$store.getters.getInsectsMsg(entry);
+        return ShipmentEntry.getInsectMsg(entry);
       },
     },
     created() {

@@ -9,6 +9,9 @@ export const enums = {
     DH: 'Daido Hana',
     ANZ: 'Anzen',
   }),
+  getSuppNameToCode(suppName) {
+    return Object.keys(this.supplierCodes).find(key => this.supplierCodes[key] === suppName);
+  },
   SupplierCountries: Object.freeze({
     Unknown: 'Unknown',
     Malaysia: 'Malaysia',
@@ -27,6 +30,11 @@ export const enums = {
     Friday: 5,
     Saturday: 6,
   }),
+  get IntToDayOfWeek() {
+    return Object.freeze([
+      'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday',
+    ]);
+  },
   EntryStatus: Object.freeze({
     Unknown: 'Unknown',
     Active: 'Active',

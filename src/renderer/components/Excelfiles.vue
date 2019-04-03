@@ -51,14 +51,23 @@
             </div>
             <label :for="'checkbox-' + entry.entryNumber" class="label-checkbox col-form-label col-form-label-lg form-control form-control-lg">
               <div class="row">
+                <div class="col">{{getFormattedDate(entry.deliveryDate)}}</div>
                 <div class="col">{{entry.awb}}</div>
                 <div class="col">{{entry.entryNumber}}</div>
                 <div class="col">{{entry.supplier}}</div>
                 <div class="col">{{entry.status}}</div>
-                <div class="col-4">{{getInsectMsg(entry)}}</div>
+                <div class="col">{{getInsectMsg(entry)}}</div>
               </div>
             </label>
           </div>
+        </div>
+      </div>
+      <div class="row" v-if="result !== null">
+        <div class="col-lg-12 alert alert-info alert-dismissible fade show" role="alert">
+          {{result}}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close" @click="waitAndSetResult()">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
       </div>
     </div>
@@ -67,6 +76,8 @@
 
 <script>
 import * as entryLogic from '../../business-logic/entry-logic.js';
+import ShipmentEntry from '../../business-logic/globals/ShipmentEntry';
+import {setTimeout} from 'timers';
 
 const fs = require('fs');
 const path = require('path');
@@ -75,6 +86,7 @@ export default {
   data: function() {
     return {
       loading: false,
+      result: null,
     };
   },
   computed: {
@@ -107,7 +119,7 @@ export default {
       this.$emit('set-loading', true);
       entryLogic.fillExpensesFile(this.entries, expensesFilePath)
           .then((data) => {
-            console.log(JSON.stringify(data));
+            this.result = data;
             this.loading = false;
             this.$emit('set-loading', false);
           });
@@ -115,10 +127,19 @@ export default {
     fillInsectResults() {},
     saveAndCloseFiles() {},
     getInsectMsg(entry) {
-      return this.$store.getters.getInsectsMsg(entry);
+      return ShipmentEntry.getInsectMsg(entry);
     },
     toogleAddToExcel(entry) {
       this.$store.dispatch('MODIFY_ENTRY', {entry: entry, property: 'addToExcel', newValue: !entry.addToExcel});
+    },
+    waitAndSetResult() {
+      // allow alert to fade before setting result to null
+      setTimeout(() => {
+        this.result = null;
+      }, 1000);
+    },
+    getFormattedDate(datestr) {
+      return new Date(datestr).toLocaleDateString('en-AU');
     },
   },
 };

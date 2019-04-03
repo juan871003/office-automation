@@ -23,4 +23,27 @@ export default class ShipmentEntry {
     this.comments = '';
     this.addToExcel = true;
   }
+  get insectsMsg() { // not working, I'm not sure why
+    if (this.isActionable === true) {
+      return 'Actionable Insects';
+    } else if (this.isActionable === false && this.isInsects === true) {
+      return 'Non-actionable Insects';
+    } else if (this.isInsects === false) {
+      return 'Clean';
+    } else {
+      return 'Unknown';
+    }
+  }
+
+  static getInsectMsg(entry) {
+    if (entry.isActionable === true) {
+      return 'Actionable Insects';
+    } else if (entry.isActionable === false && entry.isInsects === true) {
+      return 'Non-actionable Insects';
+    } else if (entry.isInsects === false) {
+      return 'Clean';
+    } else {
+      return 'Unknown';
+    }
+  }
 }
