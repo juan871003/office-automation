@@ -40,6 +40,12 @@ export const enums = {
     Active: 'Active',
     Finalised: 'Finalised',
   }),
+  InsectsMsg: Object.freeze({
+    Unknown: 'Unknown',
+    ActionableInsects: 'Actionable Insects',
+    NonActionableInsects: 'Non-actionable Insects',
+    Clean: 'Clean',
+  }),
   get EntryDeliveryDay() {
     return Object.freeze({
       [this.supplierCodes.FL]: this.DaysOfWeek.Tuesday,

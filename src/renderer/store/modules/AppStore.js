@@ -108,8 +108,7 @@ const actions = {
     context.commit('REMOVE_ENTRY', entryNumber);
   },
   REPLACE_ENTRY(context, entry) {
-    context.commit('REMOVE_ENTRY', entry.entryNumber);
-    context.commit('ADD_ENTRY', entry);
+    context.commit('REPLACE_ENTRY', entry);
   },
   MODIFY_ENTRY(context, {entry, property, newValue}) {
     const oldEntry = context.state.shipmentEntries.find(e => e.entryNumber === entry.entryNumber);
@@ -140,6 +139,13 @@ const mutations = {
   },
   REMOVE_ENTRY(state, entryNumber) {
     state.shipmentEntries = state.shipmentEntries.filter(s => s.entryNumber !== entryNumber);
+  },
+  REPLACE_ENTRY(state, entry) {
+    // We do this a a single transaction instead of using REMOVE_ENTRY and ADD_ENTRY.
+    // We have had problems when committing multiple transactions
+    //       (error accessing vuex.json file multiple times one after another)
+    state.shipmentEntries = state.shipmentEntries.filter(s => s.entryNumber !== entry.entryNumber);
+    state.shipmentEntries.push({...entry});
   },
   SET_ENTRIES_FOLDER(state, thePath) {
     state.entriesFolder = thePath;

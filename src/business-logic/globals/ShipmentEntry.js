@@ -2,6 +2,7 @@ import {enums} from './enums';
 
 /**
  * class encapsulating all properties and methods that a Shipment Entry has.
+ * IMPORTANT: we use object destructuring, so objects of this class are often shallow-copied.
  */
 export default class ShipmentEntry {
   constructor() {
@@ -11,11 +12,10 @@ export default class ShipmentEntry {
     this.entryNumber = '';
     this.country = enums.SupplierCountries.Unknown;
     this.awb = '';
-    /** @type {Date} */
-    this.arrivalDate = null;
-    /** @type {Date} */
-    this.deliveryDate = null;
+    this.arrivalDate = '';
+    this.deliveryDate = '';
     this.supplier = enums.supplierCodes.Unknown;
+    this.daffCharges = 0.0;
     /** @type {Boolean} */
     this.isInsects = null;
     /** @type {Boolean} */
@@ -23,7 +23,7 @@ export default class ShipmentEntry {
     this.comments = '';
     this.addToExcel = true;
   }
-  get insectsMsg() { // not working, I'm not sure why
+  get insectsMsg() { // not working, we use object destructuring. {...entry}
     if (this.isActionable === true) {
       return 'Actionable Insects';
     } else if (this.isActionable === false && this.isInsects === true) {
@@ -37,13 +37,13 @@ export default class ShipmentEntry {
 
   static getInsectMsg(entry) {
     if (entry.isActionable === true) {
-      return 'Actionable Insects';
+      return enums.InsectsMsg.ActionableInsects;
     } else if (entry.isActionable === false && entry.isInsects === true) {
-      return 'Non-actionable Insects';
+      return enums.InsectsMsg.NonActionableInsects;
     } else if (entry.isInsects === false) {
-      return 'Clean';
+      return enums.InsectsMsg.Clean;
     } else {
-      return 'Unknown';
+      return enums.InsectsMsg.Unknown;
     }
   }
 }

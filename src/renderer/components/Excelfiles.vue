@@ -23,12 +23,6 @@
           class="btn btn-primary"
           :class="{disabled: loading}"
         >Fill Insect Results Excel File</button>
-        <button
-          v-if="entries && entries.length > 0"
-          @click="!loading && saveAndCloseFiles()"
-          class="btn btn-primary"
-          :class="{disabled: loading}"
-        >Save and Close Files</button>
       </div>
     </div>
     <div id="content">
@@ -124,8 +118,17 @@ export default {
             this.$emit('set-loading', false);
           });
     },
-    fillInsectResults() {},
-    saveAndCloseFiles() {},
+    fillInsectResults() {
+      const resultsFilePath = this.$store.state.AppStore.insectResultsExcelFile;
+      this.loading = true;
+      this.$emit('set-loading', true);
+      entryLogic.fillResultsFile(this.entries, resultsFilePath)
+          .then((data) => {
+            this.result = data;
+            this.loading = false;
+            this.$emit('set-loading', false);
+          });
+    },
     getInsectMsg(entry) {
       return ShipmentEntry.getInsectMsg(entry);
     },

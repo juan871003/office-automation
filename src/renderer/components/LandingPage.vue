@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col-sm-3 menu">
         <ul class="list-group">
-          <li class="list-group-item  list-group-item-primary" :class="{active: isActiveTab('home'), 'disabled': loading}"         @click="showContent('home')"        >Home       </li>
+          <!--<li class="list-group-item  list-group-item-primary" :class="{active: isActiveTab('home'), 'disabled': loading}"         @click="showContent('home')"        >Home       </li>-->
           <li class="list-group-item  list-group-item-primary" :class="{active: isActiveTab('entries'), 'disabled': loading}"      @click="showContent('entries')"     >Entries    </li>
           <li class="list-group-item  list-group-item-primary" :class="{active: isActiveTab('excel_files'), 'disabled': loading}"  @click="showContent('excel_files')" >Excel Files</li>
           <li class="list-group-item  list-group-item-primary" :class="{active: isActiveTab('emailing'), 'disabled': loading}"     @click="showContent('emailing')"    >Emailing   </li>
@@ -34,7 +34,7 @@ export default {
   components: {Home, Entries, Excelfiles, Emailing, Settings},
   data: function() {
     return {
-      activeTab: 'home',
+      activeTab: 'entries',
       loading: false,
     };
   },

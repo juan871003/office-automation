@@ -31,8 +31,12 @@
       <p v-if="!entries || (entries && entries.length) === 0">No entries loaded</p>
       <div v-else>
         <div class="row justify-content-around">
-          <div v-for="entry in entries" :key="entry.entryNumber" class="card bg-light col-lg-5 entry-card">
-            <div class="card-header" :class="getEntryHeaderClass(entry.status)">
+          <div 
+            v-for="entry in entries" 
+            :key="entry.entryNumber" 
+            class="card bg-light col-lg-5 entry-card">
+
+            <div class="card-header" :class="getEntryHeaderClass(entry.status, getInsectMsg(entry))">
               <h5 class="font-weight-bold text-center">
                 {{entry.entryNumber}}
               </h5>
@@ -103,6 +107,14 @@
                       readonly
                       class="form-control"
                       :value="entry.status">
+                  </div>
+                  <div class="entry-property col-sm-4">DAFF Charges:</div>
+                  <div class="entry-property col-sm-8">
+                    <input 
+                      type="text"
+                      readonly
+                      class="form-control"
+                      :value="'$' + entry.daffCharges">
                   </div>
                   <div class="entry-property col-sm-4">Insect Result:</div>
                   <div class="entry-property col-sm-8">
@@ -177,13 +189,24 @@ import ShipmentEntry from '../../business-logic/globals/ShipmentEntry';
       modifyEntry(entry, entryProp, newValue) {
         this.$store.dispatch('MODIFY_ENTRY', {entry: entry, property: entryProp, newValue: newValue});
       },
-      getEntryHeaderClass(status) {
-        switch (status) {
-          case enums.EntryStatus.Unknown: return 'text-white bg-secondary';
-          case enums.EntryStatus.Active: return 'text-white bg-warning';
-          case enums.EntryStatus.Finalised: return 'text-white bg-success';
-          default: return 'bg-light';
-        }
+      getEntryHeaderClass(status, insectResults) {
+        const statusClass = (status) => {
+          switch (status) {
+            case enums.EntryStatus.Unknown: return 'text-white bg-secondary';
+            case enums.EntryStatus.Active: return 'text-white bg-warning';
+            case enums.EntryStatus.Finalised: return 'text-white bg-success test';
+            default: return 'bg-light';
+          }
+        };
+        const insectResultsClass = (insectResults) => {
+          switch (insectResults) {
+            case enums.InsectsMsg.ActionableInsects: return ' header-actionable-insects';
+            case enums.InsectsMsg.NonActionableInsects: return ' header-non-actionable-insects';
+            case enums.InsectsMsg.Clean: return ' header-no-insects';
+            default: return '';
+          }
+        };
+        return statusClass(status) + insectResultsClass(insectResults);
       },
       loadEntriesDetails(entries) {
         this.loading = true;
@@ -238,5 +261,14 @@ import ShipmentEntry from '../../business-logic/globals/ShipmentEntry';
   .entry-property {
     margin-top: 5px;
     margin-bottom: 5px; 
+  }
+  .header-actionable-insects {
+    border: 2px solid #dc3545;
+  }
+  .header-non-actionable-insects {
+    border: 2px solid #ffc107;
+  }
+  .header-no-insects {
+    border: 2px solid #17a2b8;
   }
 </style>

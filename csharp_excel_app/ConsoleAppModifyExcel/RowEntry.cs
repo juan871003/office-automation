@@ -7,28 +7,44 @@ using System.Threading.Tasks;
 
 namespace ConsoleAppModifyExcel {
 
-  public class RowDetail {
-    [JsonProperty( "column" )]
-    public string Column { get; set; }
+  public class ShipmentEntry {
+    [JsonProperty( "fromDocument" )]
+    public string FromDocument { get; set; }
 
-    [JsonProperty( "value" )]
-    public string Value { get; set; }
+    [JsonProperty( "status" )]
+    public string Status { get; set; }
 
-    [JsonProperty( "type" )]
-    public string Type { get; set; }
-  }
+    [JsonProperty( "entryNumber" )]
+    public string EntryNumber { get; set; }
 
-  public class RowEntry {
-    [JsonProperty( "sheetName" )]
-    public string SheetName { get; set; }
+    [JsonProperty( "country" )]
+    public string Country { get; set; }
 
-    [JsonProperty( "rowNr" )]
-    public int RowNr { get; set; }
+    [JsonProperty( "awb" )]
+    public string Awb { get; set; }
 
-    [JsonProperty( "needsSplitting" )]
-    public bool NeedsSplitting { get; set; }
+    [JsonProperty( "arrivalDate" )]
+    public string ArrivalDate { get; set; }
 
-    [JsonProperty( "rowDetails" )]
-    public List<RowDetail> RowDetails { get; set; }
+    [JsonProperty( "deliveryDate" )]
+    public string DeliveryDate { get; set; }
+
+    [JsonProperty( "supplier" )]
+    public string Supplier { get; set; }
+
+    [JsonProperty( "daffCharges" )]
+    public float DaffCharges { get; set; }
+
+    [JsonProperty( "isInsects" )]
+    public bool? IsInsects { get; set; }
+
+    [JsonProperty( "isActionable" )]
+    public bool? IsActionable { get; set; }
+
+    [JsonProperty( "comments" )]
+    public string Comments { get; set; }
+
+    [JsonProperty( "addToExcel" )]
+    public bool? AddToExcel { get; set; }
   }
 }

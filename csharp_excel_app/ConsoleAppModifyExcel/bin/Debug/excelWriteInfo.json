@@ -1,170 +1,47 @@
 [
   {
-    "sheetName": "Data",
-    "rowNr": 1642,
-    "needsSplitting": false,
-    "rowDetails": [
-      {
-        "column": "A",
-        "value": "3/21/2019",
-        "type": "date"
-      },
-      {
-        "column": "B",
-        "value": "Thursday",
-        "type": "string"
-      },
-      {
-        "column": "C",
-        "value": "23922219234",
-        "type": "string"
-      },
-      {
-        "column": "D",
-        "value": "WT",
-        "type": "string"
-      },
-      {
-        "column": "E",
-        "value": "AC99WHXXL",
-        "type": "string"
-      },
-      {
-        "column": "I",
-        "value": "Clean",
-        "type": "string"
-      },
-      {
-        "column": "J",
-        "value": "",
-        "type": "string"
-      }
-    ]
+    "addToExcel": true,
+    "arrivalDate": "Mon Mar 25 2019 00:00:00 GMT+1100 (AUS Eastern Daylight Time)",
+    "awb": "08185058573",
+    "comments": "163 ctns cutflower ex S.Africa\n\nPDI 372612\nThe specimens submitted to the entomology laboratory were all identified and assessed as:\nGroup containing species OF biosecurity concern:\nTetranychus sp. (adult female) \n",
+    "country": "South Africa",
+    "daffCharges": 270,
+    "deliveryDate": "Tue Mar 26 2019 00:00:00 GMT+1100 (AUS Eastern Daylight Time)",
+    "entryNumber": "AEAATRA9C",
+    "fromDocument": "",
+    "isActionable": true,
+    "isInsects": true,
+    "status": "Finalised",
+    "supplier": "Rolf"
   },
   {
-    "sheetName": "Data",
-    "rowNr": 1647,
-    "needsSplitting": false,
-    "rowDetails": [
-      {
-        "column": "A",
-        "value": "3/28/2019",
-        "type": "date"
-      },
-      {
-        "column": "B",
-        "value": "Thursday",
-        "type": "string"
-      },
-      {
-        "column": "C",
-        "value": "23922219245",
-        "type": "string"
-      },
-      {
-        "column": "D",
-        "value": "WT",
-        "type": "string"
-      },
-      {
-        "column": "E",
-        "value": "AEACEGH9G",
-        "type": "string"
-      },
-      {
-        "column": "I",
-        "value": "Clean",
-        "type": "string"
-      },
-      {
-        "column": "J",
-        "value": "",
-        "type": "string"
-      }
-    ]
+    "addToExcel": true,
+    "arrivalDate": "Mon Apr 01 2019 00:00:00 GMT+1100 (AUS Eastern Daylight Time)",
+    "awb": "08185058584",
+    "comments": "",
+    "country": "South Africa",
+    "daffCharges": 240,
+    "deliveryDate": "Tue Apr 02 2019 00:00:00 GMT+1100 (AUS Eastern Daylight Time)",
+    "entryNumber": "AEAEHNFHK",
+    "fromDocument": "",
+    "isActionable": false,
+    "isInsects": false,
+    "status": "Finalised",
+    "supplier": "Rolf"
   },
   {
-    "sheetName": "Data",
-    "rowNr": 1645,
-    "needsSplitting": false,
-    "rowDetails": [
-      {
-        "column": "A",
-        "value": "3/28/2019",
-        "type": "date"
-      },
-      {
-        "column": "B",
-        "value": "Thursday",
-        "type": "string"
-      },
-      {
-        "column": "C",
-        "value": "61866138645",
-        "type": "string"
-      },
-      {
-        "column": "D",
-        "value": "HW",
-        "type": "string"
-      },
-      {
-        "column": "E",
-        "value": "AEACEPXPP",
-        "type": "string"
-      },
-      {
-        "column": "I",
-        "value": "Clean",
-        "type": "string"
-      },
-      {
-        "column": "J",
-        "value": "",
-        "type": "string"
-      }
-    ]
-  },
-  {
-    "sheetName": "Data",
-    "rowNr": 1648,
-    "needsSplitting": true,
-    "rowDetails": [
-      {
-        "column": "A",
-        "value": "4/2/2019",
-        "type": "date"
-      },
-      {
-        "column": "B",
-        "value": "Tuesday",
-        "type": "string"
-      },
-      {
-        "column": "C",
-        "value": "08185058584",
-        "type": "string"
-      },
-      {
-        "column": "D",
-        "value": "RF",
-        "type": "string"
-      },
-      {
-        "column": "E",
-        "value": "AEAEHNFHK",
-        "type": "string"
-      },
-      {
-        "column": "I",
-        "value": "Clean",
-        "type": "string"
-      },
-      {
-        "column": "J",
-        "value": "",
-        "type": "string"
-      }
-    ]
+    "addToExcel": true,
+    "arrivalDate": "Mon Apr 08 2019 00:00:00 GMT+1000 (AUS Eastern Standard Time)",
+    "awb": "08185058606",
+    "comments": "",
+    "country": "South Africa",
+    "daffCharges": 240,
+    "deliveryDate": "Tue Apr 09 2019 00:00:00 GMT+1000 (AUS Eastern Standard Time)",
+    "entryNumber": "AEAF4TE96",
+    "fromDocument": "",
+    "isActionable": false,
+    "isInsects": false,
+    "status": "Finalised",
+    "supplier": "Rolf"
   }
 ]
