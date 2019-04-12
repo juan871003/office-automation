@@ -7,7 +7,8 @@
           Please go to Settings and choose a valid Shipment Entries folder
       </p>
       <button 
-        v-else @click="!loading && addEntries()"
+        v-else 
+        @click="!loading && addEntries()"
         class="btn btn-primary"
         :class="{disabled: loading}">
           Add Entries
@@ -28,7 +29,7 @@
       </button>
     </div>
     <div id="content">
-      <p v-if="!entries || (entries && entries.length) === 0">No entries loaded</p>
+      <p v-if="!entries || (entries && entries.length === 0)">No entries loaded</p>
       <div v-else>
         <div class="row justify-content-around">
           <div 
@@ -144,12 +145,11 @@
 </template>
 
 <script>
-  // import ShipmentEntry from '../../business-logic/globals/ShipmentEntry'
   
   import * as entryLogic from '../../business-logic/entry-logic.js';
   import {enums} from '../../business-logic/globals/enums';
   import Datepicker from 'vuejs-datepicker';
-import ShipmentEntry from '../../business-logic/globals/ShipmentEntry';
+  import ShipmentEntry from '../../business-logic/globals/ShipmentEntry';
   const fs = require('fs');
 
   export default {

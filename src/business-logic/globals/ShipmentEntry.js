@@ -46,4 +46,8 @@ export default class ShipmentEntry {
       return enums.InsectsMsg.Unknown;
     }
   }
+
+  static getFormatedDate(entryDate) {
+    return new Date(entryDate).toDateString();
+  }
 }
