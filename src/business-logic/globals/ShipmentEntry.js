@@ -6,7 +6,6 @@ import {enums} from './enums';
  */
 export default class ShipmentEntry {
   constructor() {
-    /** @type {String} */
     this.fromDocument = '';
     this.status = enums.EntryStatus.Unknown;
     this.entryNumber = '';
@@ -22,6 +21,7 @@ export default class ShipmentEntry {
     this.isActionable = null;
     this.comments = '';
     this.addToExcel = true;
+    this.insectResultsImg = '';
   }
   get insectsMsg() { // not working, we use object destructuring. {...entry}
     if (this.isActionable === true) {

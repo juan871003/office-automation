@@ -149,7 +149,18 @@
       sendEmail(entry) {
         this.loading = true;
         this.$emit('set-loading', true);
+        this.sendEmailResult = null;
         emailLogic.sendEmail(entry).then((result) => {
+          this.loading = false;
+          this.sendEmailResult = result;
+          this.$emit('set-loading', false);
+        });
+      },
+      sendAllEmails() {
+        this.loading = true;
+        this.$emit('set-loading', true);
+        this.sendEmailResult = null;
+        emailLogic.sendEmails(this.finalisedEntries).then((result) => {
           this.loading = false;
           this.sendEmailResult = result;
           this.$emit('set-loading', false);

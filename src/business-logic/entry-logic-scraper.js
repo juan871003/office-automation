@@ -3,6 +3,7 @@ import ShipmentEntry from './globals/ShipmentEntry';
 import {enums} from './globals/enums';
 
 const puppeteer = require('puppeteer');
+const path = require('path');
 
 export async function loadEntriesDetails(/** @type {ShipmentEntry[]} */ entries, store) {
   const browser = await puppeteer.launch({headless: true});
@@ -19,6 +20,7 @@ export async function loadEntriesDetails(/** @type {ShipmentEntry[]} */ entries,
       entryCpy.isInsects = entryResults.isInsects;
       entryCpy.comments = entryResults.comments;
       entryCpy.isActionable = entryResults.isActionable;
+      entryCpy.insectResultsImg = entryResults.insectResultsImg;
     }
     store.dispatch('REPLACE_ENTRY', entryCpy);
     await newPage.close();
@@ -72,6 +74,7 @@ async function getEntryResults(newPage, entryNumber) {
     isInsects: null,
     isActionable: null,
     comments: '',
+    insectResultsImg: '',
   };
   const status = await getEntryStatus(newPage);
   if (status !== enums.EntryStatus.Finalised) {
@@ -79,7 +82,9 @@ async function getEntryResults(newPage, entryNumber) {
   }
   results.isInsects = (pendingInsectsElHandle.length === 1);
   if (pendingInsectsElHandle.length === 1) {
-    results.comments = await getInsectsContent(newPage, pendingInsectsElHandle, entryNumber);
+    const insectsContent = await getInsectsContent(newPage, pendingInsectsElHandle, entryNumber);
+    results.comments = insectsContent.comments;
+    results.insectResultsImg = insectsContent.insectResultsImg;
     await pendingInsectsElHandle[0].dispose();
   }
   if (fumigationElHandle.length === 1) {
@@ -109,8 +114,9 @@ async function getInsectsContent(newPage, pendingInsectsElHandle, entryNumber) {
   const dCommentsHandle = await newnewPage.$x(dCommentsXpath);
   let comments = await newnewPage.evaluate(commentsEl => commentsEl.textContent, sCommentsHandle[0]);
   comments += '\n' + await newnewPage.evaluate(commentsEl => commentsEl.textContent, dCommentsHandle[0]);
-  newnewPage.screenshot({path: `./src/business-logic/screenshots/insect-resuts-${entryNumber}.png`});
+  const imgPath = `./src/business-logic/screenshots/insect-resuts-${entryNumber}.png`;
+  newnewPage.screenshot({path: imgPath});
   await sCommentsHandle[0].dispose();
   await dCommentsHandle[0].dispose();
-  return comments;
+  return {comments: comments, insectResultsImg: path.resolve(imgPath)};
 }
