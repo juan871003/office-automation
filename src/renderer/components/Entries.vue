@@ -184,7 +184,7 @@
         });
       },
       resetEntries() {
-        this.$store.dispatch('DELETE_ALL_ENTRIES');
+        entryLogic.deleteAllEntries(this.$store);
       },
       modifyEntry(entry, entryProp, newValue) {
         this.$store.dispatch('MODIFY_ENTRY', {entry: entry, property: entryProp, newValue: newValue});

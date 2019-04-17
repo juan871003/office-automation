@@ -25,6 +25,9 @@ function createWindow() {
     useContentSize: true,
     width: 1380,
     backgroundColor: '#9E9E9E',
+    webPreferences: {
+      webSecurity: false,
+    },
   });
 
   mainWindow.loadURL(winURL);

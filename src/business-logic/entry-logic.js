@@ -3,6 +3,7 @@ import {enums} from './globals/enums';
 import * as entryLogicExcel from './entry-logic-excel';
 import * as entryLogicScraper from './entry-logic-scraper';
 
+const fs = require('fs');
 const cheerio = require('cheerio');
 
 export function initialiseEntryFromDocument(content) {
@@ -25,6 +26,19 @@ export function initialiseEntryFromDocument(content) {
   se.supplier = guessSupplier(se.awb, se.country);
   se.deliveryDate = getDeliveryDate(se.arrivalDate, se.supplier);
   return se;
+}
+
+export function deleteAllEntries(store) {
+  const screenshotsToDelete =
+    store.getters.sortedEntriesCopy
+        .map(entry => entry.insectResultsImg)
+        .filter(img => img && img.length > 0);
+  screenshotsToDelete.foreach(scsFile => {
+    if (fs.existsSync(scsFile)) {
+      fs.unlinkSync(path);
+    }
+  });
+  store.dispatch('DELETE_ALL_ENTRIES');
 }
 
 export async function loadEntriesDetails(/** @type {ShipmentEntry[]} */ entries, store) {

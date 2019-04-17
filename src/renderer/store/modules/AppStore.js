@@ -170,6 +170,10 @@ const getters = {
       .sort((e1, e2) =>
         e1.entryNumber > e2.entryNumber ? 1 :
         e1.entryNumber < e2.entryNumber ? -1 : 0),
+  sortedFinalisedEntriesCopy: (state, getters) =>
+    getters.sortedEntriesCopy
+        .filter(e =>
+          e.status === enums.EntryStatus.Finalised),
 };
 
 export default {

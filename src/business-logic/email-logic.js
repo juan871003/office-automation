@@ -21,7 +21,11 @@ export function getEmailTitle(/** @type {ShipmentEntry} */entry) {
 }
 
 export function getEmailBody(entry) {
-  return `Dear All,\n\nInspection Results for ${entry.supplier} shipment delivered on ${ShipmentEntry.getFormatedDate(entry.deliveryDate)} is:\n${ShipmentEntry.getInsectMsg(entry)}.\n\n${entry.comments}`;
+  return `Dear All,<br><br>Inspection Results for ${entry.supplier} shipment delivered on ${ShipmentEntry.getFormatedDate(entry.deliveryDate)} is:<br>${ShipmentEntry.getInsectMsg(entry)}.<br><br>${convertToHtml(entry.comments)}`;
+}
+
+function convertToHtml(str) {
+  return str.replace(/(?:\r\n|\r|\n)/g, '<br>');
 }
 
 export async function sendEmail(/** @type {ShipmentEntry} */entry) {
@@ -37,11 +41,11 @@ export async function sendEmail(/** @type {ShipmentEntry} */entry) {
     to: enums.EmailTo[entry.supplier],
     /* cc: 'afi@afi.net.au', */
     subject: getEmailTitle(entry),
-    text: getEmailBody(entry),
+    html: getEmailBody(entry),
   };
   if (entry.insectResultsImg.length > 0) {
     const cid = `cid-for-${entry.entryNumber}`;
-    mailOptions.html = `<img src="cid:${cid}"/>`;
+    mailOptions.html += `<br><br><img src="cid:${cid}"/>`;
     mailOptions.attachments = [{
       filename: path.basename(entry.insectResultsImg),
       path: entry.insectResultsImg,

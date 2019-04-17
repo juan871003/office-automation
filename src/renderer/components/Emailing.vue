@@ -21,7 +21,7 @@
         <select
           v-if="selectedEntry !== null"
           v-on:change="changeSelectedEntry($event.target.value)"
-          class="form-control">
+          class="form-control entry-select-control">
           <option
             v-for="entry in finalisedEntries"
             :key="entry.entryNumber"
@@ -75,12 +75,19 @@
                   </div>
                   <div class="email-td col-lg-1">Body:</div>
                   <div class="email-td col-lg-11">
-                    <textarea  
-                      readonly
+                    <div 
+                      class="div-html-email-body"
+                      contenteditable="true"
                       rows="15"
-                      class="form-control"
-                      :value="getEmailBody(selectedEntry)">
-                    </textarea>
+                      v-html="getEmailBody(selectedEntry)"
+                    >
+                    </div>
+                    <div class="card">
+                      <img
+                        v-if="hasImage(selectedEntry)"
+                        class="card-img-top border border-info"
+                        :src="selectedEntry.insectResultsImg" />
+                    </div>
                   </div>
                   <div class="email-td col-lg-1"></div>
                   <div class="email-td col-lg-11">
@@ -124,9 +131,7 @@
     },
     computed: {
       finalisedEntries: function() {
-        return this.$store.getters.sortedEntriesCopy
-            .filter(e =>
-              e.status === enums.EntryStatus.Finalised);
+        return this.$store.getters.sortedFinalisedEntriesCopy;
       },
     },
     methods: {
@@ -162,7 +167,17 @@
         this.sendEmailResult = null;
         emailLogic.sendEmails(this.finalisedEntries).then((result) => {
           this.loading = false;
-          this.sendEmailResult = result;
+          if (Array.isArray(result)) {
+            const success = result.every(r => r.accepted.length > 0);
+            this.sendEmailResult = success ? 'All Emails Sent' :
+              `One Or More Emails Not Sent:\n${result}`;
+          } else {
+            if (result.accepted && result.accepted.length > 0) {
+              this.sendEmailResult = 'Email Sent';
+            } else {
+              this.sendEmailResult = `Email not sent:\n${response}`;
+            }
+          }
           this.$emit('set-loading', false);
         });
       },
@@ -171,6 +186,9 @@
         setTimeout(() => {
           this.sendEmailResult = null;
         }, 1000);
+      },
+      hasImage(entry) {
+        return entry.insectResultsImg.length > 0;
       },
     },
     created: function() {
@@ -188,5 +206,20 @@
   .email-td {
     margin-top: 5px;
     margin-bottom: 5px; 
+  }
+  .div-html-email-body {
+    background-color: #e9ecef;
+    opacity: 1;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    margin-bottom: 10px;
+  }
+  .entry-select-control {
+    margin-bottom: 20px; 
   }
 </style>
