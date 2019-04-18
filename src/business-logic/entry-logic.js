@@ -6,26 +6,42 @@ import * as entryLogicScraper from './entry-logic-scraper';
 const fs = require('fs');
 const cheerio = require('cheerio');
 
-export function initialiseEntryFromDocument(content) {
-  const c$ = cheerio.load(content);
-  const se = new ShipmentEntry();
-  const titleStartsWith = 'AIMS Direction for entry ';
-  const title = c$('title').text();
-  se.entryNumber = title.substring(titleStartsWith.length, title.length);
-  const countryStr = c$(`td:contains('Country')`)
-      .parent().siblings().last().children().last().text();
-  se.country = getCountry(countryStr);
-  const awbs = c$(`td:contains('MAWB:')`).text().substring();
-  se.awb = awbs.substring(
-      awbs.indexOf('MAWB:') + 'MAWB:'.length, awbs.indexOf(',')
-  );
-  const arrivalDateAsDate = new Date(
-      c$(`td:contains('Arrival Date')`)
-          .parent().children('td:nth-child(2)').text());
-  se.arrivalDate = arrivalDateAsDate.toString();
-  se.supplier = guessSupplier(se.awb, se.country);
-  se.deliveryDate = getDeliveryDate(se.arrivalDate, se.supplier);
-  return se;
+export async function processFiles(entriesFolder, store) {
+  const filenames = fs.readdirSync(entriesFolder);
+  const newEntries = [];
+  for (let i=0; i<filenames.length; i++) {
+    const se = await processFilename(filenames[i], entriesFolder);
+    if (se) {
+      newEntries.push(se);
+    }
+  }
+  store.dispatch('ADD_ENTRIES', newEntries);
+}
+
+async function processFilename(filename, entriesFolder) {
+  if (filename.indexOf('.htm') > -1) {
+    const content = fs.readFileSync(`${entriesFolder}/${filename}`, 'utf-8');
+    const c$ = cheerio.load(content);
+    const se = new ShipmentEntry();
+    const titleStartsWith = 'AIMS Direction for entry ';
+    const title = c$('title').text();
+    se.entryNumber = title.substring(titleStartsWith.length, title.length);
+    const countryStr = c$(`td:contains('Country')`)
+        .parent().siblings().last().children().last().text();
+    se.country = getCountry(countryStr);
+    const awbs = c$(`td:contains('MAWB:')`).text().substring();
+    se.awb = awbs.substring(
+        awbs.indexOf('MAWB:') + 'MAWB:'.length, awbs.indexOf(',')
+    );
+    const arrivalDateAsDate = new Date(
+        c$(`td:contains('Arrival Date')`)
+            .parent().children('td:nth-child(2)').text());
+    se.arrivalDate = arrivalDateAsDate.toString();
+    se.supplier = guessSupplier(se.awb, se.country);
+    se.deliveryDate = getDeliveryDate(se.arrivalDate, se.supplier);
+    return se;
+  }
+  return null;
 }
 
 export function deleteAllEntries(store) {
@@ -33,9 +49,9 @@ export function deleteAllEntries(store) {
     store.getters.sortedEntriesCopy
         .map(entry => entry.insectResultsImg)
         .filter(img => img && img.length > 0);
-  screenshotsToDelete.foreach(scsFile => {
+  screenshotsToDelete.forEach(scsFile => {
     if (fs.existsSync(scsFile)) {
-      fs.unlinkSync(path);
+      fs.unlinkSync(scsFile);
     }
   });
   store.dispatch('DELETE_ALL_ENTRIES');

@@ -175,13 +175,13 @@
           fs.existsSync(this.entriesFolder);
       },
       addEntries() {
-        fs.readdir(this.entriesFolder, (err, filenames) => {
-          if (err) {
-            console.log('error reading dir');
-          } else {
-            filenames.forEach(filename => processFilename(filename, this.entriesFolder, this.entries, this.$store));
-          }
-        });
+        this.loading = true;
+        this.$emit('set-loading', true);
+        entryLogic.processFiles(this.entriesFolder, this.$store)
+            .then(() => {
+              this.loading = false;
+              this.$emit('set-loading', false);
+            });
       },
       resetEntries() {
         entryLogic.deleteAllEntries(this.$store);
@@ -227,27 +227,6 @@
       Datepicker,
     },
   };
-
-  function processFilename(filename, entriesFolder, entries, store) {
-    if (filename.indexOf('.htm') > -1) {
-      fs.readFile(`${entriesFolder}/${filename}`, 'utf-8', getcontent);
-    }
-
-    function getcontent(err, content) {
-      if (err) {
-        console.log(`error reading file ${filename}`);
-      } else {
-        const se = entryLogic.initialiseEntryFromDocument(content);
-        if (entries.find(
-            entry =>
-              entry.entryNumber === se.entryNumber) !== undefined) {
-          store.dispatch('REPLACE_ENTRY', se);
-        } else {
-          store.dispatch('ADD_ENTRY', se);
-        }
-      }
-    }
-  }
 </script>
 
 <style scoped>

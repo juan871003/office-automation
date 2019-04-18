@@ -1,101 +1,9 @@
-// import { ShipmentEntry } from '../../globals/ShipmentEntry'
-// const fs = require('fs')
-// let initialStateInitialised = false
-
 const state = {
   shipmentEntries: [],
   entriesFolder: null,
   expensesExcelFile: null,
   insectResultsExcelFile: null,
 };
-// #region  old
-/* const actions = {
-  SET_INITIAL_STATE ({commit}, userDataPath) {
-    return new Promise((resolve, reject) => {
-      if (initialStateInitialised) {
-        reject(new Error('initial state has already been initialised'))
-      } else {
-        if (fs.existsSync(userDataPath))
-        commit('SET_INITIAL_STATE', )
-        initialStateInitialised = true
-      }
-    })
-  },
-  SET_SHIPMENT_ENTRIES_FOLDER ({ commit }, path) {
-    return new Promise((resolve, reject) => {
-      if (fs.existsSync(state.userDataFile)) {
-        if ((path || false) && fs.existsSync(path)) {
-          commit('SET_SHIPMENT_ENTRIES_FOLDER', path)
-          fs.writeFileSync(state.userDataFile, JSON.stringify(state), 'utf8')
-          resolve(true)
-        } else {
-          reject(new Error('path does not exist'))
-        }
-      } else {
-        reject(new Error('cannot set shipment entries folder because userDataFile is not properly set'))
-      }
-    })
-  },
-  ADD_ENTRY ({ commit }, entry) {
-    return new Promise((resolve, reject) => {
-      if (entry instanceof ShipmentEntry) {
-        if ((entry || false) && entry.isPrefilled()) {
-          commit('ADD_ENTRY', entry)
-          resolve(true)
-        } else {
-          reject(new Error('Entry is not prefilled, only prefilled entries should be added to the store'))
-        }
-      } else {
-        reject(new Error('only objects of type ShipmentEntry can be added to the store'))
-      }
-    })
-  },
-  REMOVE_ENTRY ({ commit }, entryNumber) {
-    return new Promise((resolve, reject) => {
-      if (state.shipmentEntries.some(s => s.entryNumber === entryNumber)) {
-        commit('REMOVE_ENTRY', entryNumber)
-        resolve(true)
-      } else {
-        resolve(false)
-      }
-    })
-  },
-  REPLACE_ENTRY ({ commit }, entry) {
-    return new Promise((resolve, reject) => {
-      if (entry instanceof ShipmentEntry) {
-        if (state.shipmentEntries.some(s => s.entryNumber === entry.entryNumber)) {
-          commit('REMOVE_ENTRY', entry.entryNumber)
-          if ((entry || false) && entry.isPrefilled()) {
-            commit('ADD_ENTRY', entry)
-            resolve(true)
-          } else {
-            reject(new Error('Entry is not prefilled, only prefilled entries should be replaced in the store'))
-          }
-        } else {
-          resolve(false)
-        }
-      } else {
-        reject(new Error('only objects of type ShipmentEntry can be replaced in the store'))
-      }
-    })
-  }
-}
-
-  getInsectsMsg() {
-    if (this.isActionable === true) {
-      return 'Actionable Insects';
-    } else if (this.isActionable === false && this.isInsects === true) {
-      return 'Non-actionable Insects';
-    } else if (this.isInsects === false) {
-      return 'Clean';
-    } else {
-      return 'Unknown';
-    }
-  }
-
-*/
-
-// #endregion
 
 const actions = {
   SET_INITIAL_STATE(context, state) {
@@ -103,6 +11,9 @@ const actions = {
   },
   ADD_ENTRY(context, entry) {
     context.commit('ADD_ENTRY', entry);
+  },
+  ADD_ENTRIES(context, entries) {
+    context.commit('ADD_ENTRIES', entries);
   },
   REMOVE_ENTRY(context, entryNumber) {
     context.commit('REMOVE_ENTRY', entryNumber);
@@ -136,6 +47,15 @@ const mutations = {
   },
   ADD_ENTRY(state, entry) {
     state.shipmentEntries.push({...entry});
+  },
+  ADD_ENTRIES(state, entries) {
+    // We do this a a single transaction
+    // We have had problems when committing multiple transactions
+    //       (error accessing vuex.json file multiple times one after another)
+    for (let i=0; i< entries.length; i++) {
+      state.shipmentEntries = state.shipmentEntries.filter(s => s.entryNumber !== entries[i].entryNumber);
+      state.shipmentEntries.push({...entries[i]});
+    }
   },
   REMOVE_ENTRY(state, entryNumber) {
     state.shipmentEntries = state.shipmentEntries.filter(s => s.entryNumber !== entryNumber);
