@@ -100,14 +100,8 @@
                     </button>
                   </div>
                 </div>
-                <div class="row" v-if="sendEmailResult">
-                  <div class="col-lg-12 alert alert-info alert-dismissible fade show" role="alert">
-                    {{sendEmailResult}}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" @click="waitAndSetResult()">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                </div>
+                <result-msg v-bind:result="sendEmailResult"
+                    v-on:reset-result="resetResult"></result-msg>
               </div>
             </div>
         </div>
@@ -117,11 +111,13 @@
 </template>
 
 <script>
+  import ResultMsg from './shared/ResultMsg';
   import {enums} from '../../business-logic/globals/enums';
   import ShipmentEntry from '../../business-logic/globals/ShipmentEntry';
   import * as emailLogic from '../../business-logic/email-logic';
 
   export default {
+    components: {ResultMsg},
     data: function() {
       return {
         loading: false,
@@ -181,14 +177,11 @@
           this.$emit('set-loading', false);
         });
       },
-      waitAndSetResult() {
-        // allow alert to fade before setting result to null
-        setTimeout(() => {
-          this.sendEmailResult = null;
-        }, 1000);
-      },
       hasImage(entry) {
         return entry.insectResultsImg.length > 0;
+      },
+      resetResult() {
+        this.sendEmailResult = null;
       },
     },
     created: function() {

@@ -56,27 +56,23 @@
           </div>
         </div>
       </div>
-      <div class="row" v-if="result !== null">
-        <div class="col-lg-12 alert alert-info alert-dismissible fade show" role="alert">
-          {{result}}
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close" @click="waitAndSetResult()">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-      </div>
+      <result-msg v-bind:result="result"
+          v-on:reset-result="resetResult"></result-msg>
     </div>
   </div>
 </template>
 
 <script>
+
+import ResultMsg from './shared/ResultMsg';
 import * as entryLogic from '../../business-logic/entry-logic.js';
 import ShipmentEntry from '../../business-logic/globals/ShipmentEntry';
-import {setTimeout} from 'timers';
 
 const fs = require('fs');
 const path = require('path');
 
 export default {
+  components: {ResultMsg},
   data: function() {
     return {
       loading: false,
@@ -135,11 +131,8 @@ export default {
     toogleAddToExcel(entry) {
       this.$store.dispatch('MODIFY_ENTRY', {entry: entry, property: 'addToExcel', newValue: !entry.addToExcel});
     },
-    waitAndSetResult() {
-      // allow alert to fade before setting result to null
-      setTimeout(() => {
-        this.result = null;
-      }, 1000);
+    resetResult() {
+      this.result = null;
     },
     getFormattedDate(datestr) {
       return new Date(datestr).toLocaleDateString('en-AU');

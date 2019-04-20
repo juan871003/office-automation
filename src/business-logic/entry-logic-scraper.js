@@ -6,27 +6,32 @@ const puppeteer = require('puppeteer');
 const path = require('path');
 
 export async function loadEntriesDetails(/** @type {ShipmentEntry[]} */ entries, store) {
-  const browser = await puppeteer.launch({headless: true});
-  const page = await browser.newPage();
-  await gotoMainPage(page);
-  for (let i = 0; i < entries.length; i++) {
-    const newPage = await getEntryPage(page, entries[i]);
-    /** @type {ShipmentEntry} */
-    const entryCpy = {...entries[i]};
-    entryCpy.status = await getEntryStatus(newPage);
-    entryCpy.daffCharges = await getEntryTotal(newPage);
-    if (entryCpy.status === enums.EntryStatus.Finalised) {
-      const entryResults = await getEntryResults(newPage, entries[i].entryNumber);
-      entryCpy.isInsects = entryResults.isInsects;
-      entryCpy.comments = entryResults.comments;
-      entryCpy.isActionable = entryResults.isActionable;
-      entryCpy.insectResultsImg = entryResults.insectResultsImg;
+  try {
+    const browser = await puppeteer.launch({headless: true});
+    const page = await browser.newPage();
+    await gotoMainPage(page);
+    for (let i = 0; i < entries.length; i++) {
+      const newPage = await getEntryPage(page, entries[i]);
+      /** @type {ShipmentEntry} */
+      const entryCpy = {...entries[i]};
+      entryCpy.status = await getEntryStatus(newPage);
+      entryCpy.daffCharges = await getEntryTotal(newPage);
+      if (entryCpy.status === enums.EntryStatus.Finalised) {
+        const entryResults = await getEntryResults(newPage, entries[i].entryNumber);
+        entryCpy.isInsects = entryResults.isInsects;
+        entryCpy.comments = entryResults.comments;
+        entryCpy.isActionable = entryResults.isActionable;
+        entryCpy.insectResultsImg = entryResults.insectResultsImg;
+      }
+      store.dispatch('REPLACE_ENTRY', entryCpy);
+      await newPage.close();
     }
-    store.dispatch('REPLACE_ENTRY', entryCpy);
-    await newPage.close();
+    await page.waitFor(1000);
+    await browser.close();
+    return `${entries.length} Entry Details Loaded`;
+  } catch (err) {
+    return err;
   }
-  await page.waitFor(1000);
-  await browser.close();
 }
 
 async function gotoMainPage(page) {

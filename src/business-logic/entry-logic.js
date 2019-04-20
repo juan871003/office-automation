@@ -7,41 +7,54 @@ const fs = require('fs');
 const cheerio = require('cheerio');
 
 export async function processFiles(entriesFolder, store) {
-  const filenames = fs.readdirSync(entriesFolder);
-  const newEntries = [];
-  for (let i=0; i<filenames.length; i++) {
-    const se = await processFilename(filenames[i], entriesFolder);
-    if (se) {
-      newEntries.push(se);
+  try {
+    const filenames = await new Promise((resolve, reject) => {
+      fs.readdir(entriesFolder, (error, result) => {
+        if (error) reject(error);
+        else resolve(result);
+      });
+    });
+    const newEntries = [];
+    for (let i=0; i<filenames.length; i++) {
+      const se = await processFilename(filenames[i], entriesFolder);
+      if (se) {
+        newEntries.push(se);
+      }
     }
+    store.dispatch('ADD_ENTRIES', newEntries);
+    return `${newEntries.length} entries added`;
+  } catch (error) {
+    return error;
   }
-  store.dispatch('ADD_ENTRIES', newEntries);
 }
 
 async function processFilename(filename, entriesFolder) {
-  if (filename.indexOf('.htm') > -1) {
-    const content = fs.readFileSync(`${entriesFolder}/${filename}`, 'utf-8');
-    const c$ = cheerio.load(content);
-    const se = new ShipmentEntry();
-    const titleStartsWith = 'AIMS Direction for entry ';
-    const title = c$('title').text();
-    se.entryNumber = title.substring(titleStartsWith.length, title.length);
-    const countryStr = c$(`td:contains('Country')`)
-        .parent().siblings().last().children().last().text();
-    se.country = getCountry(countryStr);
-    const awbs = c$(`td:contains('MAWB:')`).text().substring();
-    se.awb = awbs.substring(
-        awbs.indexOf('MAWB:') + 'MAWB:'.length, awbs.indexOf(',')
-    );
-    const arrivalDateAsDate = new Date(
-        c$(`td:contains('Arrival Date')`)
-            .parent().children('td:nth-child(2)').text());
-    se.arrivalDate = arrivalDateAsDate.toString();
-    se.supplier = guessSupplier(se.awb, se.country);
-    se.deliveryDate = getDeliveryDate(se.arrivalDate, se.supplier);
-    return se;
-  }
-  return null;
+  if (filename.indexOf('.htm') === -1) return null;
+  const content = await new Promise((resolve, reject) => {
+    fs.readFile(`${entriesFolder}/${filename}`, 'utf-8', (error, result) => {
+      if (error) reject(error);
+      else resolve(result);
+    });
+  });
+  const c$ = cheerio.load(content);
+  const se = new ShipmentEntry();
+  const titleStartsWith = 'AIMS Direction for entry ';
+  const title = c$('title').text();
+  se.entryNumber = title.substring(titleStartsWith.length, title.length);
+  const countryStr = c$(`td:contains('Country')`)
+      .parent().siblings().last().children().last().text();
+  se.country = getCountry(countryStr);
+  const awbs = c$(`td:contains('MAWB:')`).text().substring();
+  se.awb = awbs.substring(
+      awbs.indexOf('MAWB:') + 'MAWB:'.length, awbs.indexOf(',')
+  );
+  const arrivalDateAsDate = new Date(
+      c$(`td:contains('Arrival Date')`)
+          .parent().children('td:nth-child(2)').text());
+  se.arrivalDate = arrivalDateAsDate.toString();
+  se.supplier = guessSupplier(se.awb, se.country);
+  se.deliveryDate = getDeliveryDate(se.arrivalDate, se.supplier);
+  return se;
 }
 
 export function deleteAllEntries(store) {

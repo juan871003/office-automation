@@ -1,3 +1,6 @@
+
+import {enums} from '../../../business-logic/globals/enums';
+
 const state = {
   shipmentEntries: [],
   entriesFolder: null,

@@ -31,6 +31,8 @@
     <div id="content">
       <p v-if="!entries || (entries && entries.length === 0)">No entries loaded</p>
       <div v-else>
+        <result-msg v-bind:result="result"
+            v-on:reset-result="resetResult"></result-msg>
         <div class="row justify-content-around">
           <div 
             v-for="entry in entries" 
@@ -146,6 +148,7 @@
 
 <script>
   
+  import ResultMsg from './shared/ResultMsg';
   import * as entryLogic from '../../business-logic/entry-logic.js';
   import {enums} from '../../business-logic/globals/enums';
   import Datepicker from 'vuejs-datepicker';
@@ -153,11 +156,16 @@
   const fs = require('fs');
 
   export default {
+    components: {
+      Datepicker,
+      ResultMsg,
+    },
     data: function() {
       return {
         supplierCountries: Object.values(enums.SupplierCountries),
         supplierCodes: Object.values(enums.supplierCodes),
         loading: false,
+        result: null,
       };
     },
     computed: {
@@ -178,7 +186,8 @@
         this.loading = true;
         this.$emit('set-loading', true);
         entryLogic.processFiles(this.entriesFolder, this.$store)
-            .then(() => {
+            .then((result) => {
+              this.result = result;
               this.loading = false;
               this.$emit('set-loading', false);
             });
@@ -211,20 +220,22 @@
       loadEntriesDetails(entries) {
         this.loading = true;
         this.$emit('set-loading', true);
-        entryLogic.loadEntriesDetails(entries, this.$store).then(() => {
-          this.loading = false;
-          this.$emit('set-loading', false);
-        });
+        entryLogic.loadEntriesDetails(entries, this.$store)
+            .then((result) => {
+              this.result = result;
+              this.loading = false;
+              this.$emit('set-loading', false);
+            });
       },
       getInsectMsg(entry) {
         return ShipmentEntry.getInsectMsg(entry);
       },
+      resetResult() {
+        this.result = null;
+      },
     },
     created() {
 
-    },
-    components: {
-      Datepicker,
     },
   };
 </script>
