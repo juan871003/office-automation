@@ -30,7 +30,7 @@ export async function loadEntriesDetails(/** @type {ShipmentEntry[]} */ entries,
     await browser.close();
     return `${entries.length} Entry Details Loaded`;
   } catch (err) {
-    return err;
+    return (err && err.message) ? err.message : err;
   }
 }
 
@@ -85,16 +85,20 @@ async function getEntryResults(newPage, entryNumber) {
   if (status !== enums.EntryStatus.Finalised) {
     return results;
   }
-  results.isInsects = (pendingInsectsElHandle.length === 1);
-  if (pendingInsectsElHandle.length === 1) {
+  results.isInsects = (pendingInsectsElHandle.length >= 1);
+  if (pendingInsectsElHandle.length >= 1) {
     const insectsContent = await getInsectsContent(newPage, pendingInsectsElHandle, entryNumber);
     results.comments = insectsContent.comments;
     results.insectResultsImg = insectsContent.insectResultsImg;
-    await pendingInsectsElHandle[0].dispose();
+    for (let i = 0; i < pendingInsectsElHandle.length; i++) {
+      await pendingInsectsElHandle[i].dispose();
+    }
   }
-  if (fumigationElHandle.length === 1) {
+  if (fumigationElHandle.length >= 1) {
     results.isActionable = isOfBioConcern(results.comments);
-    await fumigationElHandle[0].dispose();
+    for (let i = 0; i < fumigationElHandle.length; i++) {
+      await fumigationElHandle[i].dispose();
+    }
   } else {
     results.isActionable = false;
   }

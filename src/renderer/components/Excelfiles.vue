@@ -23,6 +23,13 @@
           class="btn btn-primary"
           :class="{disabled: loading}"
         >Fill Insect Results Excel File</button>
+        <button 
+          v-if="entries && entries.length > 0"
+          @click="!loading && openExcelFolder()"
+          class="btn btn-primary"
+          :class="{disabled: loading}">
+            Open Results Folder
+        </button>
       </div>
     </div>
     <div id="content">
@@ -70,6 +77,7 @@ import ShipmentEntry from '../../business-logic/globals/ShipmentEntry';
 
 const fs = require('fs');
 const path = require('path');
+const {shell} = require('electron');
 
 export default {
   components: {ResultMsg},
@@ -136,6 +144,11 @@ export default {
     },
     getFormattedDate(datestr) {
       return new Date(datestr).toLocaleDateString('en-AU');
+    },
+    openExcelFolder() {
+      const resultsFilePath = this.$store.state.AppStore.insectResultsExcelFile;
+      const resultsFolderPath = resultsFilePath.substring(0, resultsFilePath.lastIndexOf('\\'));
+      shell.openExternal(resultsFolderPath);
     },
   },
 };

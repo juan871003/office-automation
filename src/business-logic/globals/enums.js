@@ -59,13 +59,13 @@ export const enums = {
   },
   get EmailTo() {
     return Object.freeze({
-      [enums.supplierCodes.FL]: 'juan+electron_FL@procusys.com', // 'rudolph@morgancargo.com, emilius@morgancargo.com, Mampe.Ditshego@flamingo.net',
-      [enums.supplierCodes.RF]: 'juan+electron_RF@procusys.com', // 'hoffman@rolfflowers.co.za, sales@rolfflowers.co.za, desiree@rolfflowers.co.za',
-      [enums.supplierCodes.WT]: 'juan+electron_WT@procusys.com', // 'gmartin@worldtropicals.mu, SNarayanan@worldtropicals.mu',
-      [enums.supplierCodes.HW]: 'juan+electron_HW@procusys.com', // 'staff@hockwee.com, cheewee@hockwee.com, meiling@hockwee.com',
-      [enums.supplierCodes.TOF]: 'juan+electron_TOF@procusys.com', // 'sale@thaiorchidvision.com',
-      [enums.supplierCodes.DH]: 'juan+electron_DH@procusys.com', // 'daidohana@ymail.com, dhoperation@yahoo.com, katrine_yam@yahoo.com, dhexport@yahoo.com',
-      [enums.supplierCodes.ANZ]: 'juan+electron_ANZ@procusys.com', // '',
+      [enums.supplierCodes.FL]: 'rudolph@morgancargo.com, emilius@morgancargo.com, Mampe.Ditshego@flamingo.net',
+      [enums.supplierCodes.RF]: 'hoffman@rolfflowers.co.za, sales@rolfflowers.co.za, desiree@rolfflowers.co.za',
+      [enums.supplierCodes.WT]: 'gmartin@worldtropicals.mu, SNarayanan@worldtropicals.mu',
+      [enums.supplierCodes.HW]: 'staff@hockwee.com, cheewee@hockwee.com, meiling@hockwee.com',
+      [enums.supplierCodes.TOF]: 'sale@thaiorchidvision.com',
+      [enums.supplierCodes.DH]: 'daidohana@ymail.com, dhoperation@yahoo.com, katrine_yam@yahoo.com, dhexport@yahoo.com',
+      [enums.supplierCodes.ANZ]: '',
     });
   },
 };

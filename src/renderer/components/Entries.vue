@@ -27,6 +27,13 @@
         :class="{disabled: loading}">
           Load Entries Details
       </button>
+      <button 
+        v-if="entries && entries.length > 0"
+        @click="!loading && openEntriesFolder()"
+        class="btn btn-primary"
+        :class="{disabled: loading}">
+          Open Entries Folder
+      </button>
     </div>
     <div id="content">
       <p v-if="!entries || (entries && entries.length === 0)">No entries loaded</p>
@@ -40,6 +47,9 @@
             class="card bg-light col-lg-5 entry-card">
 
             <div class="card-header" :class="getEntryHeaderClass(entry.status, getInsectMsg(entry))">
+              <button type="button" class="pull-right clickable close" aria-label="Close" @click="removeEntry(entry)">
+                <span aria-hidden="true">&times;</span>
+              </button>
               <h5 class="font-weight-bold text-center">
                 {{entry.entryNumber}}
               </h5>
@@ -154,6 +164,7 @@
   import Datepicker from 'vuejs-datepicker';
   import ShipmentEntry from '../../business-logic/globals/ShipmentEntry';
   const fs = require('fs');
+  const {shell} = require('electron');
 
   export default {
     components: {
@@ -232,6 +243,12 @@
       },
       resetResult() {
         this.result = null;
+      },
+      removeEntry(entry) {
+        this.$store.dispatch('REMOVE_ENTRY', entry.entryNumber);
+      },
+      openEntriesFolder() {
+        shell.openExternal(this.entriesFolder);
       },
     },
     created() {

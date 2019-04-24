@@ -5,23 +5,12 @@ import {emailCredentials} from './credentials';
 const nodemailer = require('nodemailer');
 const path = require('path');
 
-/*
-getEmailTitle(entry) {
-        // emailLogic.getEmailTitle(entry);
-        return `${entry.supplier} - DAFF Results - ${ShipmentEntry.getInsectMsg(entry)} - ${this.getFormatedDate(entry.deliveryDate)} - AWB:${entry.awb} - ${entry.entryNumber}`;
-      },
-      getEmailBody(entry) {
-        // emailLogic.getEmailBody(entry);
-        return `Dear All,\n\nInspection Results for ${entry.supplier} shipment delivered on ${this.getFormatedDate(entry.deliveryDate)} is:\n${ShipmentEntry.getInsectMsg(entry)}.\n\n${entry.comments}`;
-      },
-*/
-
 export function getEmailTitle(/** @type {ShipmentEntry} */entry) {
   return `${entry.supplier} - DAFF Results - ${ShipmentEntry.getInsectMsg(entry)} - ${ShipmentEntry.getFormatedDate(entry.deliveryDate)} - AWB:${entry.awb} - ${entry.entryNumber}`;
 }
 
 export function getEmailBody(entry) {
-  return `Dear All,<br><br>Inspection Results for ${entry.supplier} shipment delivered on ${ShipmentEntry.getFormatedDate(entry.deliveryDate)} is:<br>${ShipmentEntry.getInsectMsg(entry)}.<br><br>${convertToHtml(entry.comments)}`;
+  return `Dear All,<br><br>Inspection Results for ${entry.supplier} shipment delivered on ${ShipmentEntry.getFormatedDate(entry.deliveryDate)} are:<br>${ShipmentEntry.getInsectMsg(entry)}.<br><br>${convertToHtml(entry.comments)}`;
 }
 
 function convertToHtml(str) {
@@ -39,7 +28,7 @@ export async function sendEmail(/** @type {ShipmentEntry} */entry) {
   const mailOptions = {
     from: 'afi@afi.net.au',
     to: enums.EmailTo[entry.supplier],
-    /* cc: 'afi@afi.net.au', */
+    cc: 'afi@afi.net.au',
     subject: getEmailTitle(entry),
     html: getEmailBody(entry),
   };

@@ -21,7 +21,7 @@ async function fillFile(
     /** @type {String} */filePath,
     /** @type {String} */fileType) {
   if (!fs.existsSync(filePath)) {
-    return new Error(`file doesn't exist ${filePath}`);
+    return `file doesn't exist ${filePath}`;
   }
   return await writeExcel(
       entries.filter(e => e.addToExcel === true),
@@ -39,7 +39,7 @@ async function writeExcel(
   return new Promise((resolve, reject) => {
     exec(exeFile, [jsonFile, filePath, fileType], (error, stdout, stderr) => {
       if (error) {
-        reject(error);
+        reject(error.message);
       } else {
         resolve(stdout);
       }
