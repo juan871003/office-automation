@@ -48,7 +48,12 @@ async function getEntryPage(page, entry) {
   await page.waitForSelector('#txtEntry');
   await page.click('#txtEntry', {clickCount: 3});
   await page.keyboard.type(entry.entryNumber);
-  const newPagePromise = new Promise(x => page.browser().once('targetcreated', target => x(target.page())));
+  // wait for target created for 30 seconds, not forever.
+  const newPagePromise =
+    Promise.race([
+      new Promise(x => page.browser().once('targetcreated', target => x(target.page()))),
+      waitUntil(30),
+    ]);
   await page.click('input[name="btnSubmit"]');
   return await newPagePromise;
 }
@@ -114,18 +119,32 @@ function isOfBioConcern(/** @type {String} */ str) {
 async function getInsectsContent(newPage, pendingInsectsElHandle, entryNumber) {
   const sCommentsXpath = '//td/b[text()="Standard Comments:"]/../following-sibling::td[1]';
   const dCommentsXpath = '//td/b[text()="Direction Comments:"]/../following-sibling::td[1]';
-  const newNewPagePromise = new Promise(x => newPage.browser().once('targetcreated', target => x(target.page())));
+  const targetCreatedPromise = new Promise(x =>
+    newPage.browser().once('targetcreated', target => x(target.page())));
+  // wait for targetcreated for 30 seconds, not forever.
+  const insectsPagePromise =
+    Promise.race([targetCreatedPromise, waitUntil(30)]);
   const pendingInsectsLinkEl = await pendingInsectsElHandle[0];
   await pendingInsectsLinkEl.click();
-  const newnewPage = await newNewPagePromise;
-  await newnewPage.waitForXPath(sCommentsXpath);
-  const sCommentsHandle = await newnewPage.$x(sCommentsXpath);
-  const dCommentsHandle = await newnewPage.$x(dCommentsXpath);
-  let comments = await newnewPage.evaluate(commentsEl => commentsEl.textContent, sCommentsHandle[0]);
-  comments += '\n' + await newnewPage.evaluate(commentsEl => commentsEl.textContent, dCommentsHandle[0]);
+  const insectsPage = await insectsPagePromise;
+  await insectsPage.waitForXPath(sCommentsXpath);
+  const sCommentsHandle = await insectsPage.$x(sCommentsXpath);
+  const dCommentsHandle = await insectsPage.$x(dCommentsXpath);
+  let comments = await insectsPage.evaluate(commentsEl => commentsEl.textContent, sCommentsHandle[0]);
+  comments += '\n' + await insectsPage.evaluate(commentsEl => commentsEl.textContent, dCommentsHandle[0]);
   const imgPath = `./src/business-logic/screenshots/insect-resuts-${entryNumber}.png`;
-  newnewPage.screenshot({path: imgPath});
+  await insectsPage.screenshot({path: imgPath});
   await sCommentsHandle[0].dispose();
   await dCommentsHandle[0].dispose();
+  await insectsPage.close();
   return {comments: comments, insectResultsImg: path.resolve(imgPath)};
+}
+
+async function waitUntil(seconds) {
+  return new Promise((resolve, reject) => {
+    const wait = setTimeout(() => {
+      clearTimeout(wait);
+      reject(new Error(`timeout reached, waiting for ${seconds} seconds`));
+    }, seconds * 1000);
+  });
 }

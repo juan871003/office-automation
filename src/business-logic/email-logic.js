@@ -47,7 +47,7 @@ export async function sendEmail(/** @type {ShipmentEntry} */entry) {
         console.log('error sending email', err);
         reject(err);
       } else {
-        resolve(info);
+        resolve(info.messageId);
       }
     });
   });
