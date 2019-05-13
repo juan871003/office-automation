@@ -58,15 +58,15 @@ async function processFilename(filename, entriesFolder) {
 }
 
 export function deleteAllEntries(store) {
-  const screenshotsToDelete =
-    store.getters.sortedEntriesCopy
-        .map(entry => entry.insectResultsImg)
-        .filter(img => img && img.length > 0);
-  screenshotsToDelete.forEach(scsFile => {
-    if (fs.existsSync(scsFile)) {
-      fs.unlinkSync(scsFile);
-    }
-  });
+  store.getters.sortedEntriesCopy
+      .map(entry => entry.resultsImgs)
+      .filter(imgs => imgs && imgs.length > 0)
+      .reduce((accumulator, imgs) => accumulator.concat(imgs), [])
+      .forEach(scsFile => {
+        if (fs.existsSync(scsFile)) {
+          fs.unlinkSync(scsFile);
+        }
+      });
   store.dispatch('DELETE_ALL_ENTRIES');
 }
 

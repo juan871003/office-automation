@@ -46,7 +46,7 @@
             :key="entry.entryNumber" 
             class="card bg-light col-lg-5 entry-card">
 
-            <div class="card-header" :class="getEntryHeaderClass(entry.status, getInsectMsg(entry))">
+            <div class="card-header" :class="getEntryHeaderClass(entry)">
               <button type="button" class="pull-right clickable close" aria-label="Close" @click="removeEntry(entry)">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -129,13 +129,13 @@
                       class="form-control"
                       :value="'$' + entry.daffCharges">
                   </div>
-                  <div class="entry-property col-sm-4">Insect Result:</div>
+                  <div class="entry-property col-sm-4">Results:</div>
                   <div class="entry-property col-sm-8">
                     <input  
                       type="text"
                       readonly
                       class="form-control"
-                      :value="getInsectMsg(entry)">
+                      :value="getResultsMsg(entry)">
                   </div>
                   <div class="entry-property col-sm-4">Comments:</div>
                   <div class="entry-property col-sm-8">
@@ -209,7 +209,7 @@
       modifyEntry(entry, entryProp, newValue) {
         this.$store.dispatch('MODIFY_ENTRY', {entry: entry, property: entryProp, newValue: newValue});
       },
-      getEntryHeaderClass(status, insectResults) {
+      getEntryHeaderClass(entry) {
         const statusClass = (status) => {
           switch (status) {
             case enums.EntryStatus.Unknown: return 'text-white bg-secondary';
@@ -218,15 +218,17 @@
             default: return 'bg-light';
           }
         };
-        const insectResultsClass = (insectResults) => {
-          switch (insectResults) {
-            case enums.InsectsMsg.ActionableInsects: return ' header-actionable-insects';
-            case enums.InsectsMsg.NonActionableInsects: return ' header-non-actionable-insects';
-            case enums.InsectsMsg.Clean: return ' header-no-insects';
-            default: return '';
+        const insectResultsClass = (entry) => {
+          if (entry.isActionableInsects === true
+              || entry.isActionableDisease === true) {
+            return ' header-actionable-insects';
           }
+          if (entry.isInsects || entry.isDisease) {
+            return ' header-non-actionable-insects';
+          }
+          return ' header-no-insects';
         };
-        return statusClass(status) + insectResultsClass(insectResults);
+        return statusClass(entry.status) + insectResultsClass(entry);
       },
       loadEntriesDetails(entries) {
         this.loading = true;
@@ -238,8 +240,8 @@
               this.$emit('set-loading', false);
             });
       },
-      getInsectMsg(entry) {
-        return ShipmentEntry.getInsectMsg(entry);
+      getResultsMsg(entry) {
+        return ShipmentEntry.getResultsMsg(entry);
       },
       resetResult() {
         this.result = null;

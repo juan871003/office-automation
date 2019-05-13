@@ -6,11 +6,11 @@ const nodemailer = require('nodemailer');
 const path = require('path');
 
 export function getEmailTitle(/** @type {ShipmentEntry} */entry) {
-  return `${entry.supplier} - DAFF Results - ${ShipmentEntry.getInsectMsg(entry)} - ${ShipmentEntry.getFormatedDate(entry.deliveryDate)} - AWB:${entry.awb} - ${entry.entryNumber}`;
+  return `${entry.supplier} - DAFF Results - ${ShipmentEntry.getResultsMsg(entry)} - ${ShipmentEntry.getFormatedDate(entry.deliveryDate)} - AWB:${entry.awb} - ${entry.entryNumber}`;
 }
 
 export function getEmailBody(entry) {
-  return `Dear All,<br><br>Inspection Results for ${entry.supplier} shipment delivered on ${ShipmentEntry.getFormatedDate(entry.deliveryDate)} are:<br>${ShipmentEntry.getInsectMsg(entry)}.<br><br>${convertToHtml(entry.comments)}`;
+  return `Dear All,<br><br>Inspection Results for ${entry.supplier} shipment delivered on ${ShipmentEntry.getFormatedDate(entry.deliveryDate)} are:<br>${ShipmentEntry.getResultsMsg(entry)}.<br><br>${convertToHtml(entry.comments)}`;
 }
 
 function convertToHtml(str) {
@@ -32,15 +32,18 @@ export async function sendEmail(/** @type {ShipmentEntry} */entry) {
     subject: getEmailTitle(entry),
     html: getEmailBody(entry),
   };
-  if (entry.insectResultsImg.length > 0) {
-    const cid = `cid-for-${entry.entryNumber}`;
-    mailOptions.html += `<br><br><img src="cid:${cid}"/>`;
-    mailOptions.attachments = [{
-      filename: path.basename(entry.insectResultsImg),
-      path: entry.insectResultsImg,
-      cid: cid,
-    }];
+  if (entry.resultsImgs.length > 0) {
+    mailOptions.attachments = [];
   }
+  entry.resultsImgs.forEach((img, i) => {
+    const cid = `cid-for-${entry.entryNumber}-${i}`;
+    mailOptions.html += `<br><br><img src="cid:${cid}"/>`;
+    mailOptions.attachments.push({
+      cid: cid,
+      path: img,
+      filename: path.basename(img),
+    });
+  });
   return new Promise((resolve, reject) => {
     transporter.sendMail(mailOptions, (err, info) => {
       if (err) {

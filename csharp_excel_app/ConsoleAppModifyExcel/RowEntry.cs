@@ -38,8 +38,14 @@ namespace ConsoleAppModifyExcel {
     [JsonProperty( "isInsects" )]
     public bool? IsInsects { get; set; }
 
-    [JsonProperty( "isActionable" )]
-    public bool? IsActionable { get; set; }
+    [JsonProperty( "isActionableInsects" )]
+    public bool? IsActionableInsects { get; set; }
+
+    [JsonProperty( "isDisease" )]
+    public bool? IsDisease { get; set; }
+
+    [JsonProperty( "isActionableDisease" )]
+    public bool? IsActionableDisease { get; set; }
 
     [JsonProperty( "comments" )]
     public string Comments { get; set; }

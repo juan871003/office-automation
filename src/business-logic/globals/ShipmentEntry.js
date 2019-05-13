@@ -18,32 +18,48 @@ export default class ShipmentEntry {
     /** @type {Boolean} */
     this.isInsects = null;
     /** @type {Boolean} */
-    this.isActionable = null;
+    this.isActionableInsects = null;
+    /** @type {Boolean} */
+    this.isDisease = null;
+    /** @type {Boolean} */
+    this.isActionableDisease = null;
     this.comments = '';
     this.addToExcel = true;
-    this.insectResultsImg = '';
-  }
-  get insectsMsg() { // not working, we use object destructuring. {...entry}
-    if (this.isActionable === true) {
-      return 'Actionable Insects';
-    } else if (this.isActionable === false && this.isInsects === true) {
-      return 'Non-actionable Insects';
-    } else if (this.isInsects === false) {
-      return 'Clean';
-    } else {
-      return 'Unknown';
-    }
+    this.resultsImgs = [];
   }
 
-  static getInsectMsg(entry) {
-    if (entry.isActionable === true) {
-      return enums.InsectsMsg.ActionableInsects;
-    } else if (entry.isActionable === false && entry.isInsects === true) {
-      return enums.InsectsMsg.NonActionableInsects;
-    } else if (entry.isInsects === false) {
-      return enums.InsectsMsg.Clean;
+  static getResultsMsg(entry) {
+    const isAnyNull = (entry.isInsects === null
+      || entry.isActionableInsects === null
+      || entry.isDisease === null
+      || entry.isActionableDisease === null);
+    const isAllFalse = (entry.isInsects === false
+      && entry.isActionableInsects === false
+      && entry.isDisease === false
+      && entry.isActionableDisease === false);
+    const isMultiple = (entry.isInsects && entry.isDisease);
+    if (isAnyNull) {
+      return enums.ResultsMsg.Unknown;
+    } else if (isAllFalse) {
+      return enums.ResultsMsg.Clean;
     } else {
-      return enums.InsectsMsg.Unknown;
+      let msg = '';
+      if (entry.isInsects) {
+        msg = entry.isActionableInsects ?
+          enums.ResultsMsg.Actionable :
+          enums.ResultsMsg.NonActionable;
+        msg += ` ${enums.ResultsMsg.Insects}`;
+      }
+      if (isMultiple) {
+        msg += ' and ';
+      }
+      if (entry.isDisease) {
+        msg += entry.isActionableDisease ?
+            enums.ResultsMsg.Actionable :
+            enums.ResultsMsg.NonActionable;
+        msg += ` ${enums.ResultsMsg.Disease}`;
+      }
+      return msg;
     }
   }
 

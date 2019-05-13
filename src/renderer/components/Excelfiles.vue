@@ -57,7 +57,7 @@
                 <div class="col">{{entry.entryNumber}}</div>
                 <div class="col">{{entry.supplier}}</div>
                 <div class="col">{{entry.status}}</div>
-                <div class="col">{{getInsectMsg(entry)}}</div>
+                <div class="col">{{getResultsMsg(entry)}}</div>
               </div>
             </label>
           </div>
@@ -133,8 +133,8 @@ export default {
             this.$emit('set-loading', false);
           });
     },
-    getInsectMsg(entry) {
-      return ShipmentEntry.getInsectMsg(entry);
+    getResultsMsg(entry) {
+      return ShipmentEntry.getResultsMsg(entry);
     },
     toogleAddToExcel(entry) {
       this.$store.dispatch('MODIFY_ENTRY', {entry: entry, property: 'addToExcel', newValue: !entry.addToExcel});

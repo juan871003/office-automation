@@ -76,14 +76,32 @@ namespace ConsoleAppModifyExcel {
       xlSheet.Cells[entryRow, 4].Value = TranslateSupplier( entry.Supplier );
       xlSheet.Cells[entryRow, 5].Value = entry.EntryNumber;
       if( entry.Status == "Finalised" ) {
-        if( entry.IsInsects == true )
-          xlSheet.Cells[entryRow, 6].Value = "Insects";
-        else if( entry.IsInsects == false )
-          xlSheet.Cells[entryRow, 6].Value = "No Insects";
-        if( entry.IsActionable == true )
+        string resultType = "";
+        if( entry.IsInsects == true ) {
+          resultType = "Insects";
+          if( entry.IsDisease == true ) {
+            resultType += " and Disease";
+          }
+        }
+        else if( entry.IsInsects == false) {
+          if( entry.IsDisease == true ) {
+            resultType = "Disease";
+          } else {
+            resultType = "No Insects";
+          }
+        }
+        if( resultType.Length > 0) {
+          xlSheet.Cells[entryRow, 6].Value = resultType;
+        }
+
+        if( entry.IsActionableInsects == true || entry.IsActionableDisease == true ) {
           xlSheet.Cells[entryRow, 7].Value = "Actionable";
-        else if( entry.IsInsects == true && entry.IsActionable == false )
-          xlSheet.Cells[entryRow, 7].Value = "Not Actionable";
+        }
+        else if( entry.IsInsects == true || entry.IsDisease == true) {
+          if( entry.IsActionableInsects == false && entry.IsActionableInsects == false ) {
+            xlSheet.Cells[entryRow, 7].Value = "Not Actionable";
+          }
+        }
       }
       if( !string.IsNullOrWhiteSpace( entry.Comments ) ) {
         xlSheet.Cells[entryRow, 10].Value = entry.Comments;
@@ -100,10 +118,23 @@ namespace ConsoleAppModifyExcel {
       if( entry.DaffCharges > 0 ) {
         xlSheet.Cells[entryRow, 6] = entry.DaffCharges;
       }
-      if( entry.Status == "Finalised" && entry.IsInsects == true )
-        xlSheet.Cells[entryRow, 9] = "Insects";
-      else if( entry.IsInsects == false )
-        xlSheet.Cells[entryRow, 9] = "Clean";
+      if( entry.Status == "Finalised" ) {
+        string result = "";
+        if( entry.IsInsects == true ) {
+          result += "Insects";
+          if( entry.IsDisease == true ) {
+            result += " and ";
+          }
+        }
+        if( entry.IsDisease == true ) {
+          result += "Disease";
+        }
+        if( result.Length == 0) {
+          result = "Clean";
+        }
+        xlSheet.Cells[entryRow, 9] = result;
+      }
+
       if( !string.IsNullOrWhiteSpace( entry.Comments ) )
         xlSheet.Cells[entryRow, 10] = entry.Comments;
     }

@@ -82,11 +82,12 @@
                       v-html="getEmailBody(selectedEntry)"
                     >
                     </div>
-                    <div class="card">
+                    <div class="card" 
+                          v-for="entryImg in selectedEntry.resultsImgs" 
+                          :key="entryImg">
                       <img
-                        v-if="hasImage(selectedEntry)"
                         class="card-img-top border border-info"
-                        :src="selectedEntry.insectResultsImg" />
+                        :src="entryImg" />
                     </div>
                   </div>
                   <div class="email-td col-lg-1"></div>
@@ -164,7 +165,7 @@
         emailLogic.sendEmails(this.finalisedEntries).then((result) => {
           this.loading = false;
           if (Array.isArray(result)) {
-            const success = result.every(r => r.accepted.length > 0);
+            const success = result.every(r => r.accepted && r.accepted.length > 0);
             this.sendEmailResult = success ? 'All Emails Sent' :
               `One Or More Emails Not Sent:\n${result}`;
           } else {
@@ -176,9 +177,6 @@
           }
           this.$emit('set-loading', false);
         });
-      },
-      hasImage(entry) {
-        return entry.insectResultsImg.length > 0;
       },
       resetResult() {
         this.sendEmailResult = null;

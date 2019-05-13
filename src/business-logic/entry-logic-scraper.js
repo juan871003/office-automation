@@ -19,9 +19,11 @@ export async function loadEntriesDetails(/** @type {ShipmentEntry[]} */ entries,
       if (entryCpy.status === enums.EntryStatus.Finalised) {
         const entryResults = await getEntryResults(newPage, entries[i].entryNumber);
         entryCpy.isInsects = entryResults.isInsects;
+        entryCpy.isActionableInsects = entryResults.isActionableInsects;
+        entryCpy.isDisease = entryResults.isDisease;
+        entryCpy.isActionableDisease = entryResults.isActionableDisease;
         entryCpy.comments = entryResults.comments;
-        entryCpy.isActionable = entryResults.isActionable;
-        entryCpy.insectResultsImg = entryResults.insectResultsImg;
+        entryCpy.resultsImgs = entryResults.resultsImgs;
       }
       store.dispatch('REPLACE_ENTRY', entryCpy);
       await newPage.close();
@@ -63,7 +65,7 @@ async function getEntryStatus(newPage) {
   await newPage.waitForXPath(statusXpath);
   const statusHandle = await newPage.$x(statusXpath);
   const status = await newPage.evaluate(statusEl => statusEl.textContent, statusHandle[0]);
-  await statusHandle[0].dispose();
+  await disposeHandle(statusHandle);
   return status;
 }
 
@@ -72,41 +74,46 @@ async function getEntryTotal(newPage) {
   await newPage.waitForXPath(totalXpath);
   const totalHandle = await newPage.$x(totalXpath);
   const totalStr = await newPage.evaluate(totalEl => totalEl.textContent, totalHandle[0]);
-  await totalHandle[0].dispose();
+  await disposeHandle(totalHandle);
   return Number(totalStr.replace(/[^0-9.-]+/g, ''));
 }
 
 async function getEntryResults(newPage, entryNumber) {
   await newPage.waitForXPath('//i[text()="Total Services:"]');
   const pendingInsectsElHandle = await newPage.$x('//a[text()="Pending Insect ID"]');
+  const pendingDiseaseElHandle = await newPage.$x('//a[text()="Pending Test Results"]');
   const fumigationElHandle = await newPage.$x('//a[text()="CH3Br 32gM3 2 hrs 21C or above"]');
   const results = {
     isInsects: null,
-    isActionable: null,
+    isDisease: null,
+    isActionableInsects: null,
+    isActionableDisease: null,
     comments: '',
-    insectResultsImg: '',
+    resultsImgs: [],
   };
   const status = await getEntryStatus(newPage);
   if (status !== enums.EntryStatus.Finalised) {
     return results;
   }
   results.isInsects = (pendingInsectsElHandle.length >= 1);
+  results.isActionableInsects = false;
   if (pendingInsectsElHandle.length >= 1) {
-    const insectsContent = await getInsectsContent(newPage, pendingInsectsElHandle, entryNumber);
-    results.comments = insectsContent.comments;
-    results.insectResultsImg = insectsContent.insectResultsImg;
-    for (let i = 0; i < pendingInsectsElHandle.length; i++) {
-      await pendingInsectsElHandle[i].dispose();
-    }
+    const insectsContent = await getCommentsContent(newPage, pendingInsectsElHandle, entryNumber, 'insects');
+    results.comments += insectsContent.comments + '\n';
+    results.isActionableInsects = isOfBioConcern(insectsContent.comments);
+    results.resultsImgs.push(insectsContent.resultsImg);
   }
-  if (fumigationElHandle.length >= 1) {
-    results.isActionable = isOfBioConcern(results.comments);
-    for (let i = 0; i < fumigationElHandle.length; i++) {
-      await fumigationElHandle[i].dispose();
-    }
-  } else {
-    results.isActionable = false;
+  results.isDisease = (pendingDiseaseElHandle.length >= 1);
+  results.isActionableDisease = false;
+  if (pendingDiseaseElHandle.length >= 1) {
+    const diseaseContent = await getCommentsContent(newPage, pendingDiseaseElHandle, entryNumber, 'disease');
+    results.comments += diseaseContent.comments + '\n';
+    results.isActionableDisease = isOfBioConcern(diseaseContent.comments);
+    results.resultsImgs.push(diseaseContent.resultsImg);
   }
+  await disposeHandle(pendingInsectsElHandle);
+  await disposeHandle(pendingDiseaseElHandle);
+  await disposeHandle(fumigationElHandle);
   return results;
 }
 
@@ -116,28 +123,28 @@ function isOfBioConcern(/** @type {String} */ str) {
   return bioCon > notOfBioCon;
 }
 
-async function getInsectsContent(newPage, pendingInsectsElHandle, entryNumber) {
+async function getCommentsContent(newPage, elHandle, entryNumber, type) {
   const sCommentsXpath = '//td/b[text()="Standard Comments:"]/../following-sibling::td[1]';
   const dCommentsXpath = '//td/b[text()="Direction Comments:"]/../following-sibling::td[1]';
   const targetCreatedPromise = new Promise(x =>
     newPage.browser().once('targetcreated', target => x(target.page())));
   // wait for targetcreated for 30 seconds, not forever.
-  const insectsPagePromise =
+  const thirdPagePromise =
     Promise.race([targetCreatedPromise, waitUntil(30)]);
-  const pendingInsectsLinkEl = await pendingInsectsElHandle[0];
-  await pendingInsectsLinkEl.click();
-  const insectsPage = await insectsPagePromise;
-  await insectsPage.waitForXPath(sCommentsXpath);
-  const sCommentsHandle = await insectsPage.$x(sCommentsXpath);
-  const dCommentsHandle = await insectsPage.$x(dCommentsXpath);
-  let comments = await insectsPage.evaluate(commentsEl => commentsEl.textContent, sCommentsHandle[0]);
-  comments += '\n' + await insectsPage.evaluate(commentsEl => commentsEl.textContent, dCommentsHandle[0]);
-  const imgPath = `./src/business-logic/screenshots/insect-resuts-${entryNumber}.png`;
-  await insectsPage.screenshot({path: imgPath});
-  await sCommentsHandle[0].dispose();
-  await dCommentsHandle[0].dispose();
-  await insectsPage.close();
-  return {comments: comments, insectResultsImg: path.resolve(imgPath)};
+  const linkEl = await elHandle[0];
+  await linkEl.click();
+  const thirdPage = await thirdPagePromise;
+  await thirdPage.waitForXPath(sCommentsXpath);
+  const sCommentsHandle = await thirdPage.$x(sCommentsXpath);
+  const dCommentsHandle = await thirdPage.$x(dCommentsXpath);
+  let comments = await thirdPage.evaluate(commentsEl => commentsEl.textContent, sCommentsHandle[0]);
+  comments += '\n' + await thirdPage.evaluate(commentsEl => commentsEl.textContent, dCommentsHandle[0]);
+  const imgPath = `./src/business-logic/screenshots/${type}-resuts-${entryNumber}.png`;
+  await thirdPage.screenshot({path: imgPath});
+  await disposeHandle(sCommentsHandle);
+  await disposeHandle(dCommentsHandle);
+  await thirdPage.close();
+  return {comments: comments, resultsImg: path.resolve(imgPath)};
 }
 
 async function waitUntil(seconds) {
@@ -147,4 +154,12 @@ async function waitUntil(seconds) {
       reject(new Error(`timeout reached, waiting for ${seconds} seconds`));
     }, seconds * 1000);
   });
+}
+
+async function disposeHandle(handle) {
+  if (handle) {
+    for (let i = 0; i < handle.length; i++) {
+      await handle[i].dispose();
+    }
+  }
 }

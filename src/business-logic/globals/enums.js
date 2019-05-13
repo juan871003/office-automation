@@ -40,10 +40,12 @@ export const enums = {
     Active: 'Active',
     Finalised: 'Finalised',
   }),
-  InsectsMsg: Object.freeze({
+  ResultsMsg: Object.freeze({
     Unknown: 'Unknown',
-    ActionableInsects: 'Actionable Insects',
-    NonActionableInsects: 'Non-actionable Insects',
+    Actionable: 'Actionable',
+    NonActionable: 'Non-actionable',
+    Insects: 'Insects',
+    Disease: 'Disease',
     Clean: 'Clean',
   }),
   get EntryDeliveryDay() {
@@ -63,7 +65,7 @@ export const enums = {
       [enums.supplierCodes.RF]: 'hoffman@rolfflowers.co.za, sales@rolfflowers.co.za, desiree@rolfflowers.co.za',
       [enums.supplierCodes.WT]: 'gmartin@worldtropicals.mu, SNarayanan@worldtropicals.mu',
       [enums.supplierCodes.HW]: 'staff@hockwee.com, cheewee@hockwee.com, meiling@hockwee.com',
-      [enums.supplierCodes.TOF]: 'sale@thaiorchidvision.com',
+      [enums.supplierCodes.TOF]: 'ssflorathailand@gmail.com, norraphat.ssflora@gmail.com',
       [enums.supplierCodes.DH]: 'daidohana@ymail.com, dhoperation@yahoo.com, katrine_yam@yahoo.com, dhexport@yahoo.com',
       [enums.supplierCodes.ANZ]: '',
     });
