@@ -95,23 +95,23 @@ function getCountry(/** @type {String} */text) {
 }
 
 function guessSupplier(awb, country) {
-  if (awb.substring(0, 2).indexOf('081')
+  if (awb.substring(0, 3).indexOf('081') > -1
       && country === enums.SupplierCountries.South_Africa) {
     return enums.supplierCodes.RF;
   }
-  if (awb.substring(0, 2).indexOf('239')
+  if (awb.substring(0, 3).indexOf('239') > -1
       && country === enums.SupplierCountries.Mauritius) {
     return enums.supplierCodes.WT;
   }
-  if (awb.substring(0, 2).indexOf('618')
+  if (awb.substring(0, 3).indexOf('618') > -1
       && country === enums.SupplierCountries.Singapore) {
     return enums.supplierCodes.HW;
   }
-  if (awb.substring(0, 2).indexOf('081')
+  if (awb.substring(0, 3).indexOf('081') > -1
       && country === enums.SupplierCountries.Thailand) {
     return enums.supplierCodes.TOF;
   }
-  if (awb.substring(0, 2).indexOf('843')
+  if (awb.substring(0, 3).indexOf('843') > -1
       && country === enums.SupplierCountries.Malaysia) {
     return enums.supplierCodes.DH;
   }

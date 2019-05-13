@@ -133,6 +133,7 @@
     },
     methods: {
       changeSelectedEntry(entryNumber) {
+        this.resetResult();
         const entry = this.finalisedEntries.find(e => e.entryNumber === entryNumber);
         this.selectedEntry = entry;
       },
@@ -149,6 +150,7 @@
         return emailLogic.getEmailBody(entry);
       },
       sendEmail(entry) {
+        this.resetResult();
         this.loading = true;
         this.$emit('set-loading', true);
         this.sendEmailResult = null;
@@ -159,6 +161,7 @@
         });
       },
       sendAllEmails() {
+        this.resetResult();
         this.loading = true;
         this.$emit('set-loading', true);
         this.sendEmailResult = null;

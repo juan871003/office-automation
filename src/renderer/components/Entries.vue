@@ -194,6 +194,7 @@
           fs.existsSync(this.entriesFolder);
       },
       addEntries() {
+        this.resetResult();
         this.loading = true;
         this.$emit('set-loading', true);
         entryLogic.processFiles(this.entriesFolder, this.$store)
@@ -204,6 +205,7 @@
             });
       },
       resetEntries() {
+        this.resetResult();
         entryLogic.deleteAllEntries(this.$store);
       },
       modifyEntry(entry, entryProp, newValue) {
@@ -231,6 +233,7 @@
         return statusClass(entry.status) + insectResultsClass(entry);
       },
       loadEntriesDetails(entries) {
+        this.resetResult();
         this.loading = true;
         this.$emit('set-loading', true);
         entryLogic.loadEntriesDetails(entries, this.$store)
@@ -247,9 +250,11 @@
         this.result = null;
       },
       removeEntry(entry) {
+        this.resetResult();
         this.$store.dispatch('REMOVE_ENTRY', entry.entryNumber);
       },
       openEntriesFolder() {
+        this.resetResult();
         shell.openExternal(this.entriesFolder);
       },
     },

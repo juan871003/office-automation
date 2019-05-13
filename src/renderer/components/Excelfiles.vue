@@ -112,6 +112,7 @@ export default {
   },
   methods: {
     fillExpenses() {
+      this.resetResult();
       const expensesFilePath = this.$store.state.AppStore.expensesExcelFile;
       this.loading = true;
       this.$emit('set-loading', true);
@@ -123,6 +124,7 @@ export default {
           });
     },
     fillInsectResults() {
+      this.resetResult();
       const resultsFilePath = this.$store.state.AppStore.insectResultsExcelFile;
       this.loading = true;
       this.$emit('set-loading', true);
@@ -146,6 +148,7 @@ export default {
       return new Date(datestr).toLocaleDateString('en-AU');
     },
     openExcelFolder() {
+      this.resetResult();
       const resultsFilePath = this.$store.state.AppStore.insectResultsExcelFile;
       const resultsFolderPath = resultsFilePath.substring(0, resultsFilePath.lastIndexOf('\\'));
       shell.openExternal(resultsFolderPath);
