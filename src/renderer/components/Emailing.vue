@@ -168,7 +168,7 @@
         emailLogic.sendEmails(this.finalisedEntries).then((result) => {
           this.loading = false;
           if (Array.isArray(result)) {
-            const success = result.every(r => r.accepted && r.accepted.length > 0);
+            const success = result.every(r => r && r.length > 0);
             this.sendEmailResult = success ? 'All Emails Sent' :
               `One Or More Emails Not Sent:\n${result}`;
           } else {

@@ -28,7 +28,7 @@
           Load Entries Details
       </button>
       <button 
-        v-if="entries && entries.length > 0"
+        v-if="isValidEntriesFolder()"
         @click="!loading && openEntriesFolder()"
         class="btn btn-primary"
         :class="{disabled: loading}">
