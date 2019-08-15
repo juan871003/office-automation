@@ -18,3 +18,4 @@ Newtonsoft.*
 */ConsoleAppModifyExcel/obj/*
 */csharp_excel_app/packages/*
 */screenshots/*
+excelWriteInfo.json

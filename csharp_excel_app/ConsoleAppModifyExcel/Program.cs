@@ -192,6 +192,7 @@ namespace ConsoleAppModifyExcel {
         case "Thailand Orchids": return "TOF";
         case "Daido Hana": return "DH";
         case "Anze": return "ANZ";
+        case "Yunnan Amy": return "AY";
         default: return "Unknown";
       }
     }

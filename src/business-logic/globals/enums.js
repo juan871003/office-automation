@@ -8,6 +8,7 @@ export const enums = {
     TOF: 'Thailand Orchids',
     DH: 'Daido Hana',
     ANZ: 'Anzen',
+    AY: 'Yunnan Amy',
   }),
   getSuppNameToCode(suppName) {
     return Object.keys(this.supplierCodes).find(key => this.supplierCodes[key] === suppName);
@@ -68,6 +69,7 @@ export const enums = {
       [enums.supplierCodes.TOF]: 'ssflorathailand@gmail.com, norraphat.ssflora@gmail.com',
       [enums.supplierCodes.DH]: 'daidohana@ymail.com, dhoperation@yahoo.com, katrine_yam@yahoo.com, dhexport@yahoo.com',
       [enums.supplierCodes.ANZ]: '',
+      [enums.supplierCodes.AY]: 'ameiflowersofdubai@qq.com',
     });
   },
 };
