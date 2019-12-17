@@ -107,6 +107,10 @@ function guessSupplier(awb, country) {
       && country === enums.SupplierCountries.Singapore) {
     return enums.supplierCodes.HW;
   }
+  if (awb.substring(0, 3).indexOf('618') > -1
+      && country === enums.SupplierCountries.Malaysia) {
+    return enums.supplierCodes.HW;
+  }
   if (awb.substring(0, 3).indexOf('081') > -1
       && country === enums.SupplierCountries.Thailand) {
     return enums.supplierCodes.TOF;
